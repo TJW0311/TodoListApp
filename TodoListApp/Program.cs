@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using TodoListApp.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Add EF Coe DI
+builder.Services.AddDbContext<TodoDb>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("TodoDb")));
 
 var app = builder.Build();
 
