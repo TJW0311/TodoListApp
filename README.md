@@ -4,7 +4,7 @@
 This To-Do List web application includes the following key functionalities:
 
 - 🔐 **User Authentication**  
-  Secure login and registration system to manage personal task lists.
+  Basic login and registration system to manage personal task lists.
 
 - ✅ **Task Management (CRUD)**  
   Create, edit, and delete your daily to-do tasks with ease.
