@@ -117,6 +117,11 @@ namespace TodoListApp.Controllers
         [HttpPost]
         public IActionResult Add(TodoList task)
         {
+            if (task.StartDate > task.DueDate)
+            {
+                ModelState.AddModelError(string.Empty, "Start Date must be before or equal to Due Date.");
+            }
+
             task.UserId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
             if (ModelState.IsValid)

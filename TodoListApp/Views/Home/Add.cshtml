@@ -21,11 +21,11 @@
     </div>
     <div class="mb-3 task_startDate">
         <label asp-for="StartDate" class="form-label">Start Date:</label>
-        <input asp-for="StartDate" class="form-control" type="date" />
+        <input asp-for="StartDate" class="form-control" type="date" id="StartDate" />
     </div>
     <div class="mb-3 task_dueDate">
         <label asp-for="DueDate" class="form-label">Due Date:</label>
-        <input asp-for="DueDate" class="form-control" type="date"/>
+        <input asp-for="DueDate" class="form-control" type="date" id="DueDate" />
     </div>
     <div class="mb-3 task_status">
         <label asp-for="StatusId" class="form-label">Status:</label>
@@ -35,15 +35,3 @@
     <button type="submit" class="btn btn-primary">Add</button>
     <a asp-action="Index" class="btn btn-primary">Cancel</a>
 </form>
-
-<script>
-    document.querySelector("form").addEventListener("submit", function (e) {
-        const start = new Date(document.querySelector("#StartDate").value);
-        const due = new Date(document.querySelector("#DueDate").value);
-
-        if (start > due) {
-            e.preventDefault();
-            alert("Start Date must be before or equal to Due Date.");
-        }
-    });
-</script>
