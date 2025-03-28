@@ -10,10 +10,10 @@ namespace TodoListApp.Models
         [Required(ErrorMessage = "Please enter Username.")]
         public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Please enter email.")]
+        [Required(ErrorMessage = "Please enter email."), EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Please enter password.")]
+        [Required(ErrorMessage = "Please enter password."), DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
     }
 }

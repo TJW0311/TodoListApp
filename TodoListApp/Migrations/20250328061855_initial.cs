@@ -60,28 +60,26 @@ namespace TodoListApp.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CategoryId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CategoryId1 = table.Column<int>(type: "int", nullable: false),
-                    StatusId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StatusId1 = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_todoLists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_todoLists_categories_CategoryId1",
-                        column: x => x.CategoryId1,
+                        name: "FK_todoLists_categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "categories",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_todoLists_status_StatusId1",
-                        column: x => x.StatusId1,
+                        name: "FK_todoLists_status_StatusId",
+                        column: x => x.StatusId,
                         principalTable: "status",
                         principalColumn: "StatusId",
                         onDelete: ReferentialAction.Cascade);
@@ -109,14 +107,14 @@ namespace TodoListApp.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_todoLists_CategoryId1",
+                name: "IX_todoLists_CategoryId",
                 table: "todoLists",
-                column: "CategoryId1");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_todoLists_StatusId1",
+                name: "IX_todoLists_StatusId",
                 table: "todoLists",
-                column: "StatusId1");
+                column: "StatusId");
         }
 
         /// <inheritdoc />

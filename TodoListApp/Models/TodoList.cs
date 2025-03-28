@@ -8,7 +8,7 @@ namespace TodoListApp.Models
     {
         public int Id { get; set; }
 
-        public string UserId { get; set; } = string.Empty;
+        public int UserId { get; set; }
 
         [Required(ErrorMessage ="Please enter To Do Name.")]
         public string Name { get; set; } = string.Empty;
@@ -22,14 +22,14 @@ namespace TodoListApp.Models
         public DateTime? DueDate { get; set; }
 
         [Required(ErrorMessage = "Please select a category.")]
-        public string CategoryId { get; set; } = string.Empty;
+        public int CategoryId { get; set; } = 0;
         [ValidateNever]
         public Category Category { get; set; } = null!;
 
-        public string StatusId { get; set; } = string.Empty;
+        public int StatusId { get; set; } = 0;
         [ValidateNever]
         public Status Status { get; set; } = null!;
 
-        public bool Overdue => StatusId == "open" && DueDate < DateTime.Today;        
+        public bool Overdue => StatusId == 1 && DueDate < DateTime.Today;        
     }
 }

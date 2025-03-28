@@ -12,7 +12,7 @@ using TodoListApp.Models;
 namespace TodoListApp.Migrations
 {
     [DbContext(typeof(TodoDb))]
-    [Migration("20250325151103_initial")]
+    [Migration("20250328061855_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -106,11 +106,7 @@ namespace TodoListApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CategoryId1")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -127,22 +123,17 @@ namespace TodoListApp.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("StatusId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StatusId1")
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId1");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("StatusId1");
+                    b.HasIndex("StatusId");
 
                     b.ToTable("todoLists");
                 });
@@ -176,13 +167,13 @@ namespace TodoListApp.Migrations
                 {
                     b.HasOne("TodoListApp.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId1")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TodoListApp.Models.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId1")
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

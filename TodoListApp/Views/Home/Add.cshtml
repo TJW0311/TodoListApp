@@ -1,0 +1,49 @@
+﻿@model TodoList
+
+<h2>New Task</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Add" method="post">
+    <div class="mb-3 task_name">
+        <label asp-for="Name" class="form-label">Name:</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="mb-3 task_desc">
+        <label asp-for="Description" class="form-label">Description:</label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <div class="mb-3 task_category">
+        <label asp-for="CategoryId" class="form-label">Category:</label>
+        <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.Categories,"CategoryId","Name"))">
+            <option value=""></option>
+        </select>
+    </div>
+    <div class="mb-3 task_startDate">
+        <label asp-for="StartDate" class="form-label">Start Date:</label>
+        <input asp-for="StartDate" class="form-control" type="date" />
+    </div>
+    <div class="mb-3 task_dueDate">
+        <label asp-for="DueDate" class="form-label">Due Date:</label>
+        <input asp-for="DueDate" class="form-control" type="date"/>
+    </div>
+    <div class="mb-3 task_status">
+        <label asp-for="StatusId" class="form-label">Status:</label>
+        <select asp-for="StatusId" class="form-select" asp-items="@(new SelectList(ViewBag.Status,"StatusId","Name"))">
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+    <a asp-action="Index" class="btn btn-primary">Cancel</a>
+</form>
+
+<script>
+    document.querySelector("form").addEventListener("submit", function (e) {
+        const start = new Date(document.querySelector("#StartDate").value);
+        const due = new Date(document.querySelector("#DueDate").value);
+
+        if (start > due) {
+            e.preventDefault();
+            alert("Start Date must be before or equal to Due Date.");
+        }
+    });
+</script>

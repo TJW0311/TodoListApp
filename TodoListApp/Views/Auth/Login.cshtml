@@ -1,0 +1,109 @@
+﻿@model User
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>Login and Registration | Razor</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+    <div class="container">
+        <input type="checkbox" id="flip" />
+        <div class="cover">
+            <div class="front">
+                <img src="~/images/frontImg.png" alt="front" />
+                <div class="text">
+                    <span class="text-1">Stay organised <br /> every single day</span>
+                    <span class="text-2">Let’s get things done</span>
+                </div>
+            </div>
+            <div class="back">
+                <img src="~/images/backImg.png" alt="back" />
+                <div class="text">
+                    <span class="text-1">Start your journey to <br /> better productivity</span>
+                    <span class="text-2">Join us and stay on track</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="forms">
+            <div class="form-content">
+                <!-- LOGIN FORM -->
+                <div class="login-form">
+                    <div class="title">Login</div>
+                    <form asp-action="Login" method="post">
+                        <div class="input-boxes">
+                            <div class="input-box">
+                                <i class="fas fa-envelope"></i>
+                                <input name="Email" type="email" placeholder="Enter your email" required />
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <input name="Password" type="password" placeholder="Enter your password" required />
+                            </div>
+                            <div class="button input-box">
+                                <input type="submit" value="Login" />
+                            </div>
+                            <div class="text sign-up-text">Don't have an account? <label for="flip">Signup now</label></div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SIGNUP FORM -->
+                <div class="signup-form">
+                    <div class="title">Signup</div>
+                    <form asp-action="Register" method="post">
+                        <div class="input-boxes">
+                            <div class="input-box">
+                                <i class="fas fa-user"></i>
+                                <input name="Name" type="text" placeholder="Enter your name" required />
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-envelope"></i>
+                                <input name="Email" type="email" placeholder="Enter your email" required />
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <input name="Password" type="password" placeholder="Enter your password" required />
+                            </div>
+                            <div class="button input-box">
+                                <input type="submit" value="Signup" />
+                            </div>
+                            <div class="text sign-up-text">Already have an account? <label for="flip">Login now</label></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+@if (TempData["ToastMessage"] != null)
+{
+    <script>
+        window.onload = function () {
+            const toast = document.createElement("div");
+            toast.innerText = "@TempData["ToastMessage"]";
+            toast.style.position = "fixed";
+            toast.style.bottom = "30px";
+            toast.style.right = "30px";
+            toast.style.padding = "15px 25px";
+            toast.style.backgroundColor = "#e74c3c";
+            toast.style.color = "white";
+            toast.style.borderRadius = "5px";
+            toast.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+            toast.style.zIndex = "9999";
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        };
+    </script>
+}

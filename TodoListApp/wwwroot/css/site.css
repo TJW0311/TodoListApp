@@ -20,3 +20,19 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.fixed-desc {
+    max-width: 300px; /* or any value */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-primary {
+    color: #fff;
+    background: #7d2ae8;
+    border-radius: 6px;
+    padding: 10;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
