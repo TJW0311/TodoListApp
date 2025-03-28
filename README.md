@@ -52,3 +52,11 @@ Press F5 or click the Run (IIS Express) button to launch the application.
 **4. Login or Register**
 
 On the landing page, create a new user or log in using an existing account.
+
+
+## ⚠️ Limitations
+❌ **Category and Status Management Not Included**
+Categories and statuses are used for filtering, but users cannot add, edit, or delete them dynamically.
+
+🔐 **Basic Authentication Only**
+The app implements a simple login and registration system without advanced security features such as token-based authentication, password encryption, or role management.
