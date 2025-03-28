@@ -1,16 +1,35 @@
 # TodoListApp
-## Functions
-The functions include in this app:
-* Basic authentication
-* Add, Edit, Delete to do tasks
-* Can search by name, start date and end date
-* Can filter by category, due(Future, Past, Today) and status
+## ✨ Features
 
-## Languages and Platform
-* Platform: Visual Studio 2022
-* Language: ASP.NET, CSS, Javascript, C#
-* Framework: MVC
-* Database: Entity Framework Core (LocalDB)
+This To-Do List web application includes the following key functionalities:
+
+- 🔐 **User Authentication**  
+  Secure login and registration system to manage personal task lists.
+
+- ✅ **Task Management (CRUD)**  
+  Create, edit, and delete your daily to-do tasks with ease.
+
+- 🔍 **Smart Search**  
+  Search tasks by **Name**, **Start Date**, or **End Date** using dynamic input switching.
+
+- 🎯 **Advanced Filtering**  
+  Filter tasks based on:
+  - **Category**
+  - **Due Date** → *Today, Past, or Future*
+  - **Status** → *Pending, Completed, etc.*
+
+---
+
+## ⚙️ Technologies Used
+
+| Category        | Technology                                |
+|----------------|--------------------------------------------|
+| 👨‍💻 Platform       | Visual Studio 2022                       |
+| 🧠 Language       | C#, JavaScript, HTML, CSS                |
+| 🧱 Framework      | ASP.NET Core MVC                         |
+| 🗃️ Database       | SQL Server (LocalDB) via Entity Framework Core |
+
+---
 
 ## 🚀 How to Run the App
 **1. Open Visual Studio 2022**
