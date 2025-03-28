@@ -28,7 +28,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Statu:s</label>
+                    <label class="form-label">Status:</label>
                 <select name="filter" class="form-select" asp-items="@(new SelectList(ViewBag.Status,"StatusId","Name",ViewBag.Filters.StatusId))">
                         <option value = "0">All</option>
                     </select>
@@ -38,7 +38,42 @@
             </form>
         </div>
         <div class ="col-md-10">
-        <a asp-action="Add" class="btn btn-primary">Add New Task</a>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <form asp-action="Index" method="get" class="d-flex align-items-center gap-2 mb-3">
+                <label for="searchType" class="form-label mb-0">Search by:</label>
+
+                <select id="searchType" name="searchType" class="form-select w-auto">
+                    <option value="name" selected="@(ViewBag.SearchType == "name")">Name</option>
+                    <option value="start" selected="@(ViewBag.SearchType == "start")">Start Date</option>
+                    <option value="end" selected="@(ViewBag.SearchType == "end")">End Date</option>
+                </select>
+
+                <input id="searchValue" name="searchValue"
+                       type="text"
+                       class="form-control w-auto"
+                       placeholder="Enter value"
+                       value="@ViewBag.SearchValue" />
+
+                @if (!string.IsNullOrEmpty(ViewBag.SearchType) && !string.IsNullOrEmpty(ViewBag.SearchValue))
+                {
+                    <a asp-action="Index"
+                       class="btn p-0 border-0 bg-transparent"
+                       style="box-shadow: none;"
+                       title="Clear Search">
+                        <i class="fas fa-times" style="color: #7d2ae8; font-size: 1.2rem;"></i>
+                    </a>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary" title="Search">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                }
+            </form>
+
+            <!-- Add New Task Button -->
+            <a asp-action="Add" class="btn btn-primary ms-2">Add New Task</a>
+        </div>
         <form asp-action="CompleteTask" methood="post" asp-route-id="@ViewBag.Filters.FilterString">
             <table class="table table-bordered table-striped mt-2">
                 <thead>
@@ -93,7 +128,8 @@
                                         data-start="@task.StartDate?.ToString("yyyy-MM-dd")"
                                         data-due="@task.DueDate?.ToString("yyyy-MM-dd")"
                                         data-status="@task.StatusId"
-                                        data-bs-toggle="modal" data-bs-target="#editModal">
+                                        data-bs-toggle="modal" data-bs-target="#editModal"
+                                        title="Modify">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <form asp-action="Delete" asp-route-id="@task.Id" method="post" style="display:inline;"
@@ -227,4 +263,42 @@
             sessionStorage.removeItem('showSortToast');
         }
     };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchType = document.getElementById("searchType");
+        const searchValue = document.getElementById("searchValue");
+
+        function updateInputType() {
+            const selected = searchType.value;
+            if (selected === "name") {
+                searchValue.type = "text";
+                searchValue.placeholder = "Enter name";
+            } else {
+                searchValue.type = "date";
+                searchValue.placeholder = "";
+            }
+        }
+
+        searchType.addEventListener("change", updateInputType);
+        updateInputType(); // run on page load
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchType = document.getElementById("searchType");
+        const searchValue = document.getElementById("searchValue");
+
+        function updateInputType() {
+            const selected = searchType.value;
+            if (selected === "name") {
+                searchValue.type = "text";
+                searchValue.placeholder = "Enter name";
+            } else {
+                searchValue.type = "date";
+                searchValue.placeholder = "";
+            }
+        }
+
+        searchType.addEventListener("change", updateInputType);
+        updateInputType(); // Run on page load
+    });
 </script>

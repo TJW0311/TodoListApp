@@ -14,7 +14,7 @@ namespace TodoListApp.Controllers
 
         public HomeController(TodoDb db) => todoDb_context = db;
 
-        public IActionResult Index(string id, string sortBy = "DueDate", string sortDir = "asc")
+        public IActionResult Index(string id, string sortBy, string sortDir, string searchType, string searchValue)
         {
             var filters = new Filters(id);
             ViewBag.Filters = filters;
@@ -26,6 +26,9 @@ namespace TodoListApp.Controllers
             ViewBag.SortBy = sortBy;
             ViewBag.SortDir = sortDir;
 
+            ViewBag.SearchType = searchType;
+            ViewBag.SearchValue = searchValue;
+
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
                 return RedirectToAction("Login", "Auth"); // force login if not logged in
@@ -34,6 +37,17 @@ namespace TodoListApp.Controllers
                 .Where(t => t.UserId == userId) // Filter tasks by logged-in user
                 .Include(t => t.Category)
                 .Include(t => t.Status);
+
+            // Apply search filter
+            if (!string.IsNullOrEmpty(searchType) && !string.IsNullOrEmpty(searchValue))
+            {
+                if (searchType == "name")
+                    query = query.Where(t => t.Name.Contains(searchValue));
+                else if (searchType == "start" && DateTime.TryParse(searchValue, out DateTime startDate))
+                    query = query.Where(t => t.StartDate != null && t.StartDate.Value.Date == startDate.Date);
+                else if (searchType == "end" && DateTime.TryParse(searchValue, out DateTime endDate))
+                    query = query.Where(t => t.DueDate != null && t.DueDate.Value.Date == endDate.Date);
+            }
 
             if (filters.HasCategory)
             {
