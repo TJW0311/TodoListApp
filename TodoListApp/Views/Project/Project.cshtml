@@ -1,0 +1,64 @@
+﻿@model TodoListApp.ViewModels.ProjectViewModel
+@{
+    ViewData["Title"] = "My Projects";
+}
+<link rel="stylesheet" href="~/css/projectpage.css" />
+
+<!-- Add Project Banner -->
+<div class="add-project-banner">
+    <img src="~/images/banner-background.jpg" class="banner-image" />
+    <div class="add-card" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+        <div class="icon">+</div>
+        <div class="text">Add New Project</div>
+    </div>
+</div>
+
+<!-- My Project Section -->
+<div class="project-section">
+    <h4>My Projects</h4>
+    <div id="my-projects-container"></div>
+</div>
+
+<hr class="divider" />
+
+<!-- Group Project Section -->
+<div class="project-section">
+    <h4>Group Projects</h4>
+    <div id="group-projects-container"></div>
+</div>
+
+@await Html.PartialAsync("_AddProjectModal")
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function loadProjects(section, page) {
+            $.get(`@Url.Action("LoadProjects", "Project")?section=${section}&page=${page}`, function (data) {
+                $(`#${section}-projects-container`).html(data);
+            });
+        }
+
+        $(document).ready(function () {
+            loadProjects('my', @Model.MyProjectsPage);
+            loadProjects('group', @Model.GroupProjectsPage);
+
+            $(document).on("click", ".pagination-link", function (e) {
+                e.preventDefault();
+
+                const section = $(this).data("section");
+                const page = $(this).data("page");
+                loadProjects(section, page);
+            });
+        });
+
+        document.getElementById("addProjectForm").addEventListener("submit", function (e) {
+            const name = document.getElementById("ProjectName").value.trim();
+            //const desc = document.getElementById("ProjectDescription").value.trim();
+
+            if (!name) {
+                e.preventDefault();
+                alert("Please fill project name");
+            }
+        });
+    </script>
+}

@@ -1,0 +1,30 @@
+﻿<!-- Add Project Modal -->
+<div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Add" asp-controller="Project" method="post" id="addProjectForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProjectLabel">Add New Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ProjectName" class="form-label">Project Name</label>
+                        <input type="text" class="form-control" name="Name" id="ProjectName" required />
+                    </div>
+
+                    @* <div class="mb-3">
+                        <label for="ProjectDescription" class="form-label">Description</label>
+                        <textarea class="form-control" name="Description" id="ProjectDescription" required></textarea>
+                    </div> *@
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

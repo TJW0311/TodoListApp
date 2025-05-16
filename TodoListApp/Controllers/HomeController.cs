@@ -81,6 +81,8 @@ namespace TodoListApp.Controllers
             {
                 ("Name", "desc") => query.OrderByDescending(t => t.Name),
                 ("Name", _) => query.OrderBy(t => t.Name),
+                ("Status","desc") => query.OrderByDescending(s => s.Status),
+                ("Status", _) => query.OrderBy(_ => _.Status),
                 ("DueDate", "desc") => query.OrderByDescending(t => t.DueDate),
                 ("DueDate", _) => query.OrderBy(t => t.DueDate),
                 _ => query.OrderBy(t => t.DueDate)
@@ -89,6 +91,7 @@ namespace TodoListApp.Controllers
             string sortLabel = sortBy switch
             {
                 "Name" => "Name",
+                "Status" => "Status",
                 "DueDate" => "Due Date",
                 _ => "Due Date"
             };

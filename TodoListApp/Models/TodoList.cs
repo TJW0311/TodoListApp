@@ -21,6 +21,11 @@ namespace TodoListApp.Models
         [Required(ErrorMessage = "Please enter due date.")]
         public DateTime? DueDate { get; set; }
 
+        [Required(ErrorMessage = "Please select a priority.")]
+        public int PriorityId { get; set; } = 1;
+        [ValidateNever]
+        public Priority Priority { get; set; }
+
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryId { get; set; } = 0;
         [ValidateNever]
@@ -29,6 +34,18 @@ namespace TodoListApp.Models
         public int StatusId { get; set; } = 0;
         [ValidateNever]
         public Status Status { get; set; } = null!;
+
+        public int CreatedByUserId { get; set; }
+        [ValidateNever]
+        public User CreatedByUser { get; set; }
+
+        public int? AssignedToUserId { get; set; }
+        [ValidateNever]
+        public User? AssignedToUser { get; set; }
+
+        public int ProjectId { get; set; }
+        [ValidateNever]
+        public Project Project { get; set; }
 
         public bool Overdue => StatusId == 1 && DueDate < DateTime.Today;        
     }

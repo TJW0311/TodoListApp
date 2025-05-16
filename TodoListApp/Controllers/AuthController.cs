@@ -37,7 +37,7 @@ namespace TodoListApp.Controllers
             {
                 //Store the user ID in session
                 HttpContext.Session.SetInt32("UserId", foundUser.UserId);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Project", "Project");
             }
 
             TempData["ToastMessage"] = "Invalid credentials!";

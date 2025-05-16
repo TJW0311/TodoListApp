@@ -1,0 +1,42 @@
+﻿@model TodoListApp.ViewModels.ProjectViewModel
+@if (Model.MyProjects.Any())
+{
+    <div class="card-grid">
+        @foreach (var project in Model.MyProjects)
+        {
+            <div class="card" onclick="location.href='@Url.Action("Details", "Project", new { id = project.Id })'">
+                <div class="project-name">@project.Name</div>
+            </div>
+        }
+    </div>
+    <div class="pagination">
+        @{
+            var currentPage = Model.MyProjectsPage;
+            var totalPages = Model.MyProjectsTotalPages;
+        }
+
+        @if (currentPage > 1)
+        {
+            <a href="#" class="pagination-link prev"
+               data-section="my" data-page="@(currentPage - 1)">
+                &laquo;
+            </a>
+        }
+
+        <span class="current-page">Page @currentPage of @totalPages</span>
+
+        @if (currentPage < totalPages)
+        {
+            <a href="#" class="pagination-link next"
+               data-section="my" data-page="@(currentPage + 1)">
+                &raquo;
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="no-records">
+        <img src="~/images/no-records.png" alt="No records found" />
+    </div>
+}
