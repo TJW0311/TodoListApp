@@ -113,41 +113,7 @@
                         <td class="text-truncate">@task.Priority?.Name</td>
                         <td class="text-truncate">@task.Status?.Name</td>
                         <td class="text-truncate">@task.CreatedByUser?.Name</td>
-                        <td class="text-truncate">@task.AssignedToUser?.Name</td>
-                        @* <td class="action-col">
-                            <div class="d-flex gap-2">
-                                @if (task.StatusId == 1)
-                                {
-                                    <form asp-action="CompleteTask" method="post" asp-route-id="@ViewBag.Filters.FilterString">
-                                        <button type="submit" class="btn btn-success btn-sm"
-                                                name="todoListId" value="@task.Id" title="Mark as Completed">
-                                            <i class="fas fa-check-circle"></i>
-                                        </button>
-                                    </form>
-                                }
-                                <button type="button" class="btn btn-warning btn-sm edit-btn"
-                                        data-id="@task.Id"
-                                        data-name="@task.Name"
-                                        data-description="@task.Description"
-                                        data-category="@task.CategoryId"
-                                        data-start="@task.StartDate?.ToString("yyyy-MM-dd")"
-                                        data-due="@task.DueDate?.ToString("yyyy-MM-dd")"
-                                        data-priority="@task.PriorityId"
-                                        data-status="@task.StatusId"
-                                        data-assignto="@task.AssignedToUserId"
-                                        data-bs-toggle="modal" data-bs-target="#editModal"
-                                        title="Modify">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <form asp-action="Delete" asp-route-id="@task.Id" method="post" style="display:inline;"
-                                      onsubmit="return confirm('Are you sure you want to delete this task?');">
-                                    <input type="hidden" name="Id" value="@task.Id" />
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td> *@
+                        <td class="text-truncate">@task.AssignedToUser?.Name</td>                        
                     </tr>
                 }
             </tbody>
