@@ -41,6 +41,10 @@ namespace TodoListApp.Controllers
 
             const int PageSize = 8;
 
+            var memberCount = _context.projectMembers
+                    .GroupBy(pm => pm.ProjectId)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
             if (section == "my")
             {
                 var myProjectIds = _context.projectMembers
@@ -51,12 +55,14 @@ namespace TodoListApp.Controllers
                 var myProjects = _context.projects
                     .Where(p => myProjectIds.Contains(p.Id))
                     .OrderByDescending(p => p.Id);
+                
 
                 var vm = new ProjectViewModel
                 {
                     MyProjects = myProjects.Skip((page - 1) * PageSize).Take(PageSize).ToList(),
                     MyProjectsPage = page,
-                    MyProjectsTotalPages = (int)Math.Ceiling(myProjects.Count() / (double)PageSize)
+                    MyProjectsTotalPages = (int)Math.Ceiling(myProjects.Count() / (double)PageSize),
+                    ProjectMemberCounts = memberCount
                 };
 
                 return PartialView("_MyProjectCards", vm);
@@ -77,7 +83,8 @@ namespace TodoListApp.Controllers
                 {
                     GroupProjects = groupProjects.Skip((page - 1) * PageSize).Take(PageSize).ToList(),
                     GroupProjectsPage = page,
-                    GroupProjectsTotalPages = (int)Math.Ceiling(groupProjects.Count() / (double)PageSize)
+                    GroupProjectsTotalPages = (int)Math.Ceiling(groupProjects.Count() / (double)PageSize),
+                    ProjectMemberCounts = memberCount
                 };
 
                 return PartialView("_GroupProjectCards", vm);
@@ -123,6 +130,33 @@ namespace TodoListApp.Controllers
             return RedirectToAction("Project", "Project");
         }
 
-    }
+        [HttpPost]
+        public IActionResult UpdateProjectName([FromBody] ProjectUpdateDto dto)
+        {
+            var project = _context.projects.Find(dto.Id);
+            if (project == null || string.IsNullOrWhiteSpace(dto.NewName) || dto.NewName.Length > 25)
+                return BadRequest("Invalid request");
 
+            project.Name = dto.NewName;
+            _context.SaveChanges();
+
+            return Ok("Updated");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteProject([FromBody] ProjectDeleteDto dto)
+        {
+            var project = _context.projects.Find(dto.Id);
+            if (project == null) return NotFound();
+
+            _context.projects.Remove(project);
+            _context.SaveChanges();
+
+            return Ok("Deleted");
+        }
+
+        public class ProjectUpdateDto { public int Id { get; set; } public string NewName { get; set; } }
+        public class ProjectDeleteDto { public int Id { get; set; } }
+
+    }
 }

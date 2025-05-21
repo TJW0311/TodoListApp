@@ -6,7 +6,9 @@
 
 <!-- Add Project Banner -->
 <div class="add-project-banner">
-    <img src="~/images/banner-background.jpg" class="banner-image" />
+    <div class="background-layer"></div>
+    <img src="~/images/people-banner.png" alt="Characters" class="people-image" />
+
     <div class="add-card" data-bs-toggle="modal" data-bs-target="#addProjectModal">
         <div class="icon">+</div>
         <div class="text">Add New Project</div>
@@ -16,7 +18,7 @@
 <!-- My Project Section -->
 <div class="project-section">
     <h4>My Projects</h4>
-    <div id="my-projects-container"></div>
+    <div id="my-projects-container" class="project-container"></div>
 </div>
 
 <hr class="divider" />
@@ -24,13 +26,15 @@
 <!-- Group Project Section -->
 <div class="project-section">
     <h4>Group Projects</h4>
-    <div id="group-projects-container"></div>
+    <div id="group-projects-container" class="project-container"></div>
 </div>
 
+@await Html.PartialAsync("_EditDeleteModal")
 @await Html.PartialAsync("_AddProjectModal")
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/EditDelProjectLogic.js" asp-append-version="true"></script>
     <script>
         function loadProjects(section, page) {
             $.get(`@Url.Action("LoadProjects", "Project")?section=${section}&page=${page}`, function (data) {
@@ -59,6 +63,25 @@
                 e.preventDefault();
                 alert("Please fill project name");
             }
+        });
+
+        /*Real-time project name digit count*/
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.getElementById("addProjectName");
+            const counter = document.getElementById("addCharCount");
+
+            input.addEventListener("input", function () {
+                const len = input.value.length;
+                counter.textContent = `${len}/25`;
+
+                if (len >= 25) {
+                    counter.classList.remove("text-muted");
+                    counter.classList.add("text-danger");
+                } else {
+                    counter.classList.remove("text-danger");
+                    counter.classList.add("text-muted");
+                }
+            });
         });
     </script>
 }

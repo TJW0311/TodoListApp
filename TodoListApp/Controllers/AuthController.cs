@@ -20,6 +20,12 @@ namespace TodoListApp.Controllers
         [HttpPost]
         public IActionResult Register(User user)
         {
+            var foundUser = _context.users.FirstOrDefault(u => u.Email == user.Email);
+            if (foundUser != null)
+            {
+                TempData["ToastMessage"] = "Email already exists!";
+                return View("Login", user);
+            }
             if (ModelState.IsValid)
             {
                 _context.users.Add(user);

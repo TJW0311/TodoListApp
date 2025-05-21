@@ -1,0 +1,71 @@
+﻿.table-wrapper-scroll-x {
+    overflow-x: auto;
+    position: relative;
+}
+
+/*.task-table {
+    min-width: 1200px;
+    table-layout: fixed;
+}*/
+
+    .task-table th,
+    .task-table td {
+        white-space: nowrap;
+        
+    }
+
+    .task-table .description-col {
+        max-width: 350px;
+        min-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .task-table .action-col {
+        position: sticky;
+        right: 0;
+        background: #fff;
+        z-index: 3;
+        min-width: 150px; /* ensure it's wide enough */
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
+    }
+
+.task-row:hover {
+    background-color: #7d2ae8;
+    color: white !important;
+    cursor: pointer;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.pagination-link {
+    padding: 8px 12px;
+    background-color: #7d2ae8;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+    .pagination-link:hover {
+        background-color: #ddd;
+    }
+
+    .pagination-link.disabled {
+        pointer-events: none;
+        background-color: #ccc;
+        color: #888;
+    }
+
+.readonly-select {
+    pointer-events: none;
+    background-color: #e9ecef;
+    opacity: 1;
+}

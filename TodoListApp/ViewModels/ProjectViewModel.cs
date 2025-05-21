@@ -11,5 +11,7 @@ namespace TodoListApp.ViewModels
         public int GroupProjectsPage { get; set; }
         public int MyProjectsTotalPages { get; set; }
         public int GroupProjectsTotalPages { get; set; }
+
+        public Dictionary<int, int> ProjectMemberCounts { get; set; } = new();
     }
 }

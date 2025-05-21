@@ -10,7 +10,7 @@ namespace TodoListApp.Models
 
         public int UserId { get; set; }
 
-        [Required(ErrorMessage ="Please enter To Do Name.")]
+        [Required(ErrorMessage ="Please enter task name.")]
         public string Name { get; set; } = string.Empty;
 
         public string Description { get; set; } = string.Empty;

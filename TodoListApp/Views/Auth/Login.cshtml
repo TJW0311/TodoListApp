@@ -84,3 +84,26 @@
 </body>
 </html>
 
+@if (TempData["ToastMessage"] != null)
+{
+    <script>
+        window.onload = function () {
+            const toast = document.createElement("div");
+            toast.innerText = "@TempData["ToastMessage"]";
+            toast.style.position = "fixed";
+            toast.style.bottom = "30px";
+            toast.style.right = "30px";
+            toast.style.padding = "15px 25px";
+            toast.style.backgroundColor = "#e74c3c";
+            toast.style.color = "white";
+            toast.style.borderRadius = "5px";
+            toast.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+            toast.style.zIndex = "9999";
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        };
+    </script>
+}

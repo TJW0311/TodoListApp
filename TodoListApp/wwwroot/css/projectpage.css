@@ -2,19 +2,36 @@
     position: relative;
     width: 100%;
     height: 200px;
+    border-radius: 10px;
     margin-bottom: 30px;
+    overflow: hidden;
 }
 
-.banner-image {
+.background-layer {
+    background-image: url('/images/background-banner.png');
+    background-size: cover;
+    background-position: center;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
     border-radius: 10px;
+    z-index: 1;
+}
+
+.people-image {
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    height: 90%;
+    z-index: 2;
 }
 
 .add-card {
     position: absolute;
-    top: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     right: 30px;
     width: 160px;
     height: 120px;
@@ -28,6 +45,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease-in-out;
     cursor: pointer;
+    z-index: 3;
 }
 
     .add-card .icon {
@@ -36,8 +54,9 @@
     }
 
     .add-card .text {
-        margin-top: 10px;
-        color: #333;
+        margin-top: 8px;
+        font-size: 14px;
+        color: #000;
     }
 
 .project-section {
@@ -46,10 +65,14 @@
     margin-bottom: 30px;
 }
 
+.project-container{
+    width:98%;
+}
+
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    gap: 50px;
     margin-top: 20px;
 }
 
@@ -67,29 +90,98 @@
         transform: scale(1.03);
     }
 
+.project-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    height: 180px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: relative;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    overflow: visible;
+    z-index: 1;
+}
+
+    .project-card:hover {
+        transform: scale(1.03);
+    }
+
+/* Position 3-dot menu inside project card */
+.project-dropdown {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 20; /* Make sure it appears on top */
+}
+
+/* Dropdown menu positioning */
+.project-card .dropdown-menu {
+    min-width: 80px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 20;
+    inset: auto !important;
+    top: 0px !important;
+    right: 12px !important;
+}
+
+/* Button style for the 3-dot icon */
+.project-card .project-dropdown button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Optional hover state for the icon */
+.project-card .project-dropdown button:hover {
+    color: #000;
+}
+
+/* Error style for project name input */
+#editProjectName.is-invalid {
+    border-color: #dc3545;
+}
+
+.project-title {
+    font-weight: bold;
+    font-size: 18px;
+    color: #222;
+    word-wrap: break-word; /*ensures long words break appropriately.*/
+    white-space: normal;
+    overflow-wrap: break-word; /*ensures long words break appropriately.*/
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.project-sub {
+    font-size: 14px;
+    color: #777;
+    margin-top: 4px;
+}
+
+.member-icon {
+    position: absolute;
+    bottom: 20px;
+    left: 15px;
+    width: 20px;
+    height: 20px;
+}
+
+    .member-icon img {
+        width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
 .divider {
     border: 1px solid #ddd;
     margin: 50px 0;
 }
-
-.pagination {
-    margin-top: 20px;
-    text-align: center;
-}
-
-    .pagination a {
-        margin: 0 5px;
-        padding: 6px 12px;
-        border-radius: 5px;
-        background-color: #e0e0e0;
-        color: #333;
-        text-decoration: none;
-    }
-
-        .pagination a.active {
-            background-color: #7d2ae8;
-            color: white;
-        }
 
 .pagination {
     display: flex;
@@ -101,8 +193,8 @@
 
 .pagination-link {
     padding: 8px 12px;
-    background-color: #e0e0e0;
-    color: #333;
+    background-color: #7d2ae8;
+    color: #fff;
     border-radius: 6px;
     text-decoration: none;
     font-weight: bold;

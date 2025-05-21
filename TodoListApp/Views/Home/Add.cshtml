@@ -1,37 +1,152 @@
 ﻿@model TodoList
 
 <h2>New Task</h2>
+<form asp-action="Add" method="post" novalidate>
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
 
-<div asp-validation-summary="All" class="text-danger"></div>
-
-<form asp-action="Add" method="post">
-    <div class="mb-3 task_name">
+    <div class="mb-3">
         <label asp-for="Name" class="form-label">Name:</label>
         <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    <div class="mb-3 task_desc">
+
+    <div class="mb-3">
         <label asp-for="Description" class="form-label">Description:</label>
         <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
-    <div class="mb-3 task_category">
-        <label asp-for="CategoryId" class="form-label">Category:</label>
-        <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.Categories,"CategoryId","Name"))">
-            <option value=""></option>
+
+    <div class="mb-3">
+        <label asp-for="Category" class="form-label">Category:</label>
+        <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.Categories, "CategoryId", "Name"))">
         </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
-    <div class="mb-3 task_startDate">
+
+    <div class="mb-3">
         <label asp-for="StartDate" class="form-label">Start Date:</label>
         <input asp-for="StartDate" class="form-control" type="date" id="StartDate" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
     </div>
-    <div class="mb-3 task_dueDate">
+
+    <div class="mb-3">
         <label asp-for="DueDate" class="form-label">Due Date:</label>
         <input asp-for="DueDate" class="form-control" type="date" id="DueDate" />
+        <span asp-validation-for="DueDate" class="text-danger"></span>
     </div>
-    <div class="mb-3 task_status">
-        <label asp-for="StatusId" class="form-label">Status:</label>
-        <select asp-for="StatusId" class="form-select" asp-items="@(new SelectList(ViewBag.Status,"StatusId","Name"))">
+
+    <div class="mb-3">
+        <label asp-for="Priority" class="form-label">Priority:</label>
+        <select asp-for="PriorityId" class="form-select" id="PriorityDropdown" 
+            asp-items="@(new SelectList(ViewBag.Priority, "PriorityId", "Name"))">
         </select>
+        <span asp-validation-for="PriorityId" class="text-danger"></span>
     </div>
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Status:</label>
+        <select asp-for="StatusId" class="form-select" id="StatusDropdown" 
+            asp-items="@(new SelectList(ViewBag.Status, "StatusId", "Name"))">
+        </select>
+        <span asp-validation-for="StatusId" class="text-danger"></span>
+        <div id="statusNotice" class="form-text text-warning mt-1" style="display: none;"></div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AssignedToUser" class="form-label">Assigned To:</label>
+        <select asp-for="AssignedToUserId" class="form-select" asp-items="ViewBag.Members">
+        </select>
+        <span asp-validation-for="AssignedToUserId" class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-primary">Add</button>
-    <a asp-action="Index" class="btn btn-primary">Cancel</a>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Dropdown setting
+        const statusDropdown = document.getElementById("StatusDropdown");
+        const priorityDropdown = document.getElementById("PriorityDropdown");
+        const statusNotice = document.getElementById("statusNotice");
+
+        // Save original status options for reuse
+        const originalStatusOptions = Array.from(statusDropdown.options);
+
+        function updateStatusOptionsBasedOnPriority(priorityValue) {
+            const statusId_WaitingApproval = "2"; // replace with actual ID from DB
+            const statusId_Approved = "3";
+
+            // Reset
+            statusDropdown.innerHTML = "";
+            originalStatusOptions.forEach(opt => statusDropdown.appendChild(opt.cloneNode(true)));
+
+            if (priorityValue === "3") { // High
+                statusDropdown.value = statusId_WaitingApproval;
+                statusDropdown.setAttribute("readonly", true);
+                statusDropdown.classList.add("readonly-select");
+                statusNotice.textContent = "⚠ High priority requires approval by manager.";
+                statusNotice.style.display = "block";
+                // Filter out Draft, Approved, In Progress, Completed
+                for (let i = statusDropdown.options.length - 1; i >= 0; i--) {
+                    const option = statusDropdown.options[i];
+                    if (!(option.value === statusId_WaitingApproval)) {
+                        statusDropdown.remove(i);
+                    }
+                }
+            } else if (priorityValue === "1" || priorityValue === "2") { // Low or Medium
+                statusDropdown.disabled = false;
+                statusNotice.style.display = "none";
+
+                // Filter out Waiting Approval and Approved
+                for (let i = statusDropdown.options.length - 1; i >= 0; i--) {
+                    const option = statusDropdown.options[i];
+                    if (option.value === statusId_WaitingApproval || option.value === statusId_Approved) {
+                        statusDropdown.remove(i);
+                    }
+                }
+            } else {
+                // Reset state if priority not selected
+                statusDropdown.setAttribute("readonly", false);
+                statusDropdown.classList.remove("readonly-select");
+                statusNotice.style.display = "none";
+            }
+        }
+
+        priorityDropdown.addEventListener("change", () => {
+            updateStatusOptionsBasedOnPriority(priorityDropdown.value);
+        });
+
+        // Call once on page load in case of edit mode
+        updateStatusOptionsBasedOnPriority(priorityDropdown.value);
+
+        // Date validation
+        const startInput = document.getElementById("StartDate");
+        const dueInput = document.getElementById("DueDate");
+
+        function validateDueDate() {
+            const start = new Date(startInput.value);
+            const due = new Date(dueInput.value);
+            const dueErrorSpan = document.querySelector("[data-valmsg-for='DueDate']");
+
+            if (startInput.value && dueInput.value && due < start) {
+                dueErrorSpan.innerText = "❗ Due date cannot be earlier than start date.";
+                dueInput.classList.add("is-invalid");
+            } else {
+                dueErrorSpan.innerText = "";
+                dueInput.classList.remove("is-invalid");
+            }
+        }
+
+        startInput.addEventListener("change", validateDueDate);
+        dueInput.addEventListener("change", validateDueDate);
+
+        $("form input, form select").on("input change", function () {
+            const field = $(this);
+            if (field.get(0).checkValidity()) {
+                field.removeClass("input-validation-error");
+                field.next(".text-danger").remove(); // remove the validation message
+            }
+        });
+    });
+</script>

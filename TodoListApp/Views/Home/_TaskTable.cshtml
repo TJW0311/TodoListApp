@@ -1,0 +1,139 @@
+﻿@model TodoListApp.ViewModels.TaskListViewModel
+@{
+    string nameArrow = ViewBag.SortBy == "Name"
+        ? (ViewBag.SortDir == "asc" ? "↑" : "↓")
+        : "";
+
+    string dueArrow = ViewBag.SortBy == "DueDate"
+        ? (ViewBag.SortDir == "asc" ? "↑" : "↓")
+        : "";
+
+    string statusArrow = ViewBag.SortBy == "Status"
+        ? (ViewBag.SortDir == "asc" ? "↑" : "↓")
+        : "";
+
+    string nextNameDir = ViewBag.SortBy == "Name" && ViewBag.SortDir == "asc" ? "desc" : "asc";
+    string nextStatusDir = ViewBag.SortBy == "Status" && ViewBag.SortDir == "asc" ? "desc" : "asc";
+    string nextDueDir = ViewBag.SortBy == "DueDate" && ViewBag.SortDir == "asc" ? "desc" : "asc";
+}
+@if (Model.Tasks.Any())
+{
+    <div class="table-wrapper-scroll-x">
+        <table class="table task-table custom-scroll-table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="text-nowrap">
+                        Name
+                        <a asp-action="Index" asp-route-sortBy="Name" asp-route-sortDir="@nextNameDir" class="sort-link text-decoration-none">
+                            <i class="fas fa-sort"></i> @nameArrow
+                        </a>
+                    </th>
+                    <th class="description-col">Description</th>
+                    <th class="text-nowrap">Category</th>
+                    <th class="text-nowrap">Start Date</th>
+                    <th class="text-nowrap">
+                        Due Date
+                        <a asp-action="Index" asp-route-sortBy="DueDate" asp-route-sortDir="@nextDueDir" class="sort-link text-decoration-none">
+                            <i class="fas fa-sort"></i> @dueArrow
+                        </a>
+                    </th>
+                    <th class="text-nowrap">Priority</th>
+                    <th class="text-nowrap">
+                        Status
+                        <a asp-action="Index" asp-route-sortBy="Status" asp-route-sortDir="@nextStatusDir" class="sort-link text-decoration-none">
+                            <i class="fas fa-sort"></i> @statusArrow
+                        </a>
+                        </th>
+                    <th class="text-nowrap">Created By</th>
+                    <th class="text-nowrap">Assign To</th>
+                   @*  <th class="text-nowrap action-col">Action</th> *@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (TodoList task in Model.Tasks)
+                {
+                    string overdue = task.Overdue ? "bg-warning" : "";
+                    <tr class="task-row" data-id="@task.Id" data-bs-toggle="modal" data-bs-target="#editModal">
+
+                        <td class="">@task.Name</td>
+                        <td class="description-col text-truncate">@task.Description</td>
+                        <td class="text-truncate">@task.Category?.Name</td>
+                        <td class="text-truncate">@task.StartDate?.ToShortDateString()</td>
+                        <td class="text-truncate @overdue">@task.DueDate?.ToShortDateString()</td>
+                        <td class="text-truncate">@task.Priority?.Name</td>
+                        <td class="text-truncate">@task.Status?.Name</td>
+                        <td class="text-truncate">@task.CreatedByUser?.Name</td>
+                        <td class="text-truncate">@task.AssignedToUser?.Name</td>
+                        @* <td class="action-col">
+                            <div class="d-flex gap-2">
+                                @if (task.StatusId == 1)
+                                {
+                                    <form asp-action="CompleteTask" method="post" asp-route-id="@ViewBag.Filters.FilterString">
+                                        <button type="submit" class="btn btn-success btn-sm"
+                                                name="todoListId" value="@task.Id" title="Mark as Completed">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                    </form>
+                                }
+                                <button type="button" class="btn btn-warning btn-sm edit-btn"
+                                        data-id="@task.Id"
+                                        data-name="@task.Name"
+                                        data-description="@task.Description"
+                                        data-category="@task.CategoryId"
+                                        data-start="@task.StartDate?.ToString("yyyy-MM-dd")"
+                                        data-due="@task.DueDate?.ToString("yyyy-MM-dd")"
+                                        data-priority="@task.PriorityId"
+                                        data-status="@task.StatusId"
+                                        data-assignto="@task.AssignedToUserId"
+                                        data-bs-toggle="modal" data-bs-target="#editModal"
+                                        title="Modify">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <form asp-action="Delete" asp-route-id="@task.Id" method="post" style="display:inline;"
+                                      onsubmit="return confirm('Are you sure you want to delete this task?');">
+                                    <input type="hidden" name="Id" value="@task.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td> *@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        @{
+            var currentPage = Model.CurrentPage;
+            var totalPages = Model.TotalPages;
+        }
+
+        @if (currentPage > 1)
+        {
+            <a href="#" class="pagination-link prev"
+               data-section="task" data-page="@(currentPage - 1)">
+                &laquo;
+            </a>
+        }
+
+        <span class="mx-3">Page <strong>@currentPage</strong> of <strong>@totalPages</strong></span>
+
+        @if (currentPage < totalPages)
+        {
+            <a href="#" class="pagination-link next"
+               data-section="task" data-page="@(currentPage + 1)">
+                &raquo;
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="text-center mt-5">
+        <img src="~/images/no-records.png" alt="No records found" style="max-width: 300px;" />
+        <p class="mt-3">No tasks found for this project.</p>
+    </div>
+}

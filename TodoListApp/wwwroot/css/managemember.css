@@ -1,0 +1,102 @@
+﻿.manage-member-popup {
+    border-radius: 15px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Max height for the modal body to avoid full-screen overflow */
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 70vh;
+    overflow: hidden;
+}
+
+/* Add Section */
+.add-section {
+    overflow-y: auto;
+    max-height: 25vh;
+    padding-right: 5px;
+}
+
+/* Members Section */
+.member-section {
+    overflow-y: auto;
+    max-height: 35vh;
+    padding-right: 5px;
+}
+
+
+.search-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.search-input {
+    flex-grow: 0.95;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 20px;
+    outline: none;
+}
+
+.search-btn {
+    margin-left: -40px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.add-btn {
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 5px 15px;
+    background-color: white;
+    margin-top: 10px;
+}
+
+.member-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.role-dropdown {
+    min-width: 100px;
+    border-radius: 5px;
+}
+
+.selectable-user {
+    cursor: pointer;
+    padding: 8px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    border-radius: 6px;
+}
+
+    .selectable-user:hover {
+        background-color: #f0f0f0;
+    }
+
+.selected {
+    background-color: #d6b8fc;
+    border-color: #7d2ae8;
+}
+
+.toast-message {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #7d2ae8;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    z-index: 9999;
+    display: none;
+}

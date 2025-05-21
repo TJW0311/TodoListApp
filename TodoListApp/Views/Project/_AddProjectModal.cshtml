@@ -11,7 +11,8 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="ProjectName" class="form-label">Project Name</label>
-                        <input type="text" class="form-control" name="Name" id="ProjectName" required />
+                        <input type="text" id="addProjectName" class="form-control" name="Name" maxlength="25" required />
+                        <small id="addCharCount" class="text-muted">0/25</small>
                     </div>
 
                     @* <div class="mb-3">

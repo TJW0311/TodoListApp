@@ -1,0 +1,164 @@
+﻿<link rel="stylesheet" href="~/css/managemember.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+@model TodoListApp.ViewModels.ManageMemberViewModel
+@{
+    var isManager = Model.CurrentUserRole == "Manager";
+}
+<div class="modal-header">
+    <h5 class="modal-title">Manage Members</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <h6>Add New</h6>
+    <div class="add-section">
+        <div class="search-section">
+            <input type="text" id="searchEmail" class="search-input" placeholder="Search email" onkeypress="handleKeyPress(event)">
+            <button id="searchBtn" class="search-btn" onclick="handleSearchClick()">
+                <i id="searchIcon" class="bi bi-search"></i>
+            </button>
+        </div>
+        <div id="searchResults" class="mb-2"></div>
+        <input type="hidden" id="selectedUserId">
+        <button class="add-btn" onclick="addSelectedUser(@Model.ProjectId)">Add</button>
+        <input type="hidden" id="selectedUserId">
+    </div>
+    <hr />
+    <h6>Members</h6>
+    <div class="member-section" id="membersList">
+        @foreach (var member in Model.Members)
+        {
+            <div class="member-row" data-userid="@member.UserId">
+                <div>
+                    <div>@member.User.Name</div>
+                    <div>@member.User.Email</div>
+                </div>
+                <div>
+                    <select class="form-select role-dropdown"
+                            data-role="@member.Role"
+                            onchange="updateRole(this, @Model.ProjectId, @member.UserId)"
+                    @(isManager ? "" : "disabled")>
+                        <option value="Manager" selected="@(member.Role == "Manager")">Manager</option>
+                        <option value="Member" selected="@(member.Role == "Member")">Member</option>
+                    </select>
+                </div>
+                @if (isManager)
+                {
+                    <div>
+                        <button class="btn btn-danger btn-sm" onclick="removeMember(@Model.ProjectId, @member.UserId)">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    var searchActive = false;
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            handleSearchClick();
+        }
+    }
+
+    function handleSearchClick() {
+        if (searchActive) {
+            clearSearch();
+            return;
+        }
+
+        const email = $("#searchEmail").val().trim();
+        if (!email) return;
+
+        $.post("/Home/SearchUserByEmail", { email }, function (data) {
+            const container = $("#searchResults");
+            if (!data.found) {
+                container.html('<div>No record found</div>');
+            } else {
+                let html = `<div>Select a user:</div>`;
+                data.users.forEach(user => {
+                    html += `
+                        <div class="user-result selectable-user" data-userid="${user.userId}">
+                            <strong>${user.name}</strong> (${user.email})
+                        </div>`;
+                });
+                container.html(html);
+                $(".selectable-user").on("click", function () {
+                    $(".selectable-user").removeClass("selected");
+                    $(this).addClass("selected");
+                    $("#selectedUserId").val($(this).data("userid"));
+                });
+            }
+
+            // Update icon to close
+            $("#searchIcon").removeClass("bi-search").addClass("bi-x-lg");
+            searchActive = true;
+        });
+    }
+
+    function clearSearch() {
+        $("#searchEmail").val('');
+        $("#searchResults").empty();
+        $("#selectedUserId").val('');
+        $("#searchIcon").removeClass("bi-x-lg").addClass("bi-search");
+        searchActive = false;
+    }
+
+    function addSelectedUser(projectId) {
+        const userId = $("#selectedUserId").val();
+        if (!userId) return showToast("Please select a user first.");
+
+        $.post("/Home/AddMember", { projectId, userId }, function () {
+            reloadMembers(projectId);
+        }).fail(function (xhr) {
+            showToast(xhr.responseText || "Failed to add member.");
+        });
+    }
+
+    function showToast(message) {
+        const toast = $('<div class="toast-message">' + message + '</div>');
+        $("body").append(toast);
+        toast.fadeIn(300).delay(2000).fadeOut(500, function () { $(this).remove(); });
+    }
+
+    function updateRole(selectElement, projectId, userId) {
+        const newRole = selectElement.value;
+        const oldRole = $(selectElement).data("role");
+        console.log(projectId, userId, newRole);
+        $.post("/Home/UpdateRole", { projectId, userId, newRole })
+            .done(function (res){
+                if(!res.success) {
+                    // Revert UI to original role
+                    selectElement.value = oldRole;
+
+                    // Optionally show toast or alert
+                    showToast(res.message || "Failed to update role.");
+                }else {
+                    // Success: update the oldRole reference
+                    $(selectElement).data("role", newRole);
+                }                
+            })
+    }
+
+    function removeMember(projectId, userId) {
+        $.post("/Home/RemoveMember", { projectId, userId })
+            .done(function (res) {
+                if (!res.success) {
+                    showToast(res.message);
+                } else {
+                    reloadMembers(projectId);
+                }
+            });
+    }
+
+    function reloadMembers(projectId) {
+            $.get(`/Home/ManageMembersPartial?projectId=${projectId}`, function (html) {
+            $("#manageMembersContent").html(html);
+        });
+    }
+</script>

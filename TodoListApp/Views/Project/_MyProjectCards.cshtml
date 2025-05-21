@@ -4,8 +4,25 @@
     <div class="card-grid">
         @foreach (var project in Model.MyProjects)
         {
-            <div class="card" onclick="location.href='@Url.Action("Details", "Project", new { id = project.Id })'">
-                <div class="project-name">@project.Name</div>
+            var memberCount = Model.ProjectMemberCounts[project.Id]; // You must include this in your ViewModel
+            <div class="project-card" onclick="location.href='@Url.Action("Index", "Home", new { projId = project.Id })'">
+                @* event.stopPropagation() prevents the event from bubbling up to the .project-card's onclick *@
+                <div class="project-dropdown" onclick="event.stopPropagation()">
+                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="event.stopPropagation(); openEditPopup(@project.Id, '@project.Name')">Edit</a></li>
+                        <li><a class="dropdown-item text-danger" href="#" onclick="event.stopPropagation(); openDeletePopup(@project.Id, '@project.Name')">Delete</a></li>
+                    </ul>
+                </div>
+
+                <div class="project-title">@project.Name</div>
+                <div class="project-sub">@project.Name.ToLower()</div>
+
+                <div class="member-icon" title="@memberCount member@(memberCount > 1 ? "s" : "")">
+                    <img src="~/images/my-icon.png" alt="Members" />
+                </div>
             </div>
         }
     </div>
@@ -40,3 +57,5 @@ else
         <img src="~/images/no-records.png" alt="No records found" />
     </div>
 }
+
+<script src="~/js/EditDelProjectLogic.js" asp-append-version="true"></script>
