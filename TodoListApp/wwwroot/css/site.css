@@ -54,3 +54,11 @@ select.input-validation-error {
     z-index: 9999;
     display: none;
 }
+
+.bg-warning {
+    background-color: #f2b1b1 !important;
+}
+
+    .bg-warning:hover {
+        color: #7d2ae8 !important;
+    }

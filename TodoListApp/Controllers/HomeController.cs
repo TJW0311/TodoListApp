@@ -106,6 +106,11 @@ namespace TodoListApp.Controllers
                 query = query.Where(t => t.CategoryId.ToString() == filters.CategoryId);
             }
 
+            if (filters.HasPriority)
+            {
+                query = query.Where(t => t.PriorityId.ToString() == filters.PriorityId);
+            }
+
             if (filters.HasStatus)
             {
                 query = query.Where(t => t.StatusId.ToString() == filters.StatusId);
@@ -133,8 +138,12 @@ namespace TodoListApp.Controllers
             {
                 ("Name", "desc") => query.OrderByDescending(t => t.Name),
                 ("Name", _) => query.OrderBy(t => t.Name),
-                ("Status","desc") => query.OrderByDescending(s => s.Status),
-                ("Status", _) => query.OrderBy(_ => _.Status),
+                ("Status","desc") => query.OrderByDescending(s => s.StatusId),
+                ("Status", _) => query.OrderBy(_ => _.StatusId),
+                ("Priority", "desc") => query.OrderByDescending(s => s.PriorityId),
+                ("Priority", _) => query.OrderBy(_ => _.PriorityId),
+                ("StartDate", "desc") => query.OrderByDescending(t => t.StartDate),
+                ("StartDate", _) => query.OrderBy(t => t.StartDate),
                 ("DueDate", "desc") => query.OrderByDescending(t => t.DueDate),
                 ("DueDate", _) => query.OrderBy(t => t.DueDate),
                 _ => query.OrderByDescending(t => t.Id)
@@ -144,13 +153,21 @@ namespace TodoListApp.Controllers
             {
                 "Name" => "Name",
                 "Status" => "Status",
+                "StartDate" => "Start Date",
                 "DueDate" => "Due Date",
+                "Priority" => "Priority",
                 _ => "Due Date"
             };
 
             string sortDirection = sortDir == "desc" ? "descending" : "ascending";
-            TempData["SortToast"] = $"Sorted by {sortLabel} ({sortDirection})";
-
+            if(sortLabel == "Status" || sortLabel == "Priority")
+            {
+                TempData["SortToast"] = $"Sorted by {sortLabel} Hierarchy ({sortDirection})";
+            }
+            else {
+                TempData["SortToast"] = $"Sorted by {sortLabel} ({sortDirection})";
+            }
+            
             int totalTasks = query.Count();
             var tasks = query
                .Skip((page - 1) * pageSize)
@@ -261,10 +278,14 @@ namespace TodoListApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Filter(string[] filter)
+        public IActionResult Filter(string[] filter, 
+            string searchType,
+            string searchValue,
+            string sortBy,
+            string sortDir)
         { 
             string id = string.Join("-", filter);
-            return RedirectToAction("Index", new {ID =id});
+            return RedirectToAction("Index", new {ID =id, sortBy, sortDir, searchType, searchValue });
         }
 
         [HttpPost]
@@ -276,6 +297,7 @@ namespace TodoListApp.Controllers
                 task.StatusId = 2;
                 todoDb_context.SaveChanges();
             }
+
             return RedirectToAction("Index", new { ID = id });
         }
 
@@ -307,7 +329,7 @@ namespace TodoListApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(TodoList updatedTask)
+        public IActionResult Edit(TodoList updatedTask, string id, string filterId, string sortBy, string sortDir, string searchType, string searchValue)
         {
             var task = todoDb_context.todoLists.Find(updatedTask.Id);
             if (task != null)
@@ -323,7 +345,7 @@ namespace TodoListApp.Controllers
 
                 todoDb_context.SaveChanges();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { ID = filterId, sortBy, sortDir, searchType, searchValue });
         }
 
         [HttpPost]

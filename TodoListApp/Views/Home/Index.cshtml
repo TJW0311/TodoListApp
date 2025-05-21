@@ -18,16 +18,28 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Due:</label>
-                <select name="filter" class="form-select" asp-items="@(new SelectList(ViewBag.DueFilters,"Key","Value",ViewBag.Filters.Due))">
+                    <select name="filter" class="form-select" asp-items="@(new SelectList(ViewBag.DueFilters,"Key","Value",ViewBag.Filters.Due))">
                         <option value = "all">All</option>
                     </select>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Priority:</label>
+                    <select name="filter" class="form-select" asp-items="@(new SelectList(ViewBag.Priority,"PriorityId","Name",ViewBag.Filters.PriorityId))">
+                        <option value="0">All</option>
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label class="form-label">Status:</label>
-                <select name="filter" class="form-select" asp-items="@(new SelectList(ViewBag.Status,"StatusId","Name",ViewBag.Filters.StatusId))">
+                    <select name="filter" class="form-select" asp-items="@(new SelectList(ViewBag.Status,"StatusId","Name",ViewBag.Filters.StatusId))">
                         <option value = "0">All</option>
                     </select>
                 </div>
+
+                <input type="hidden" name="searchType" value="@ViewBag.SearchType" />
+                <input type="hidden" name="searchValue" value="@ViewBag.SearchValue" />
+                <input type="hidden" name="sortBy" value="@ViewBag.SortBy" />
+                <input type="hidden" name="sortDir" value="@ViewBag.SortDir" />
+
                 <button type="submit" class="btn btn-primary">Filter</button>
                 <a asp-action="Index" asp-route-id="" class="btn btn-primary">Clear</a>
             </form>
@@ -35,6 +47,7 @@
         <div class ="col-md-10">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <form asp-action="Index" method="get" class="d-flex align-items-center gap-2">
+                
                     <label for="searchType" class="form-label mb-0">Search by:</label>
 
                     <select id="searchType" name="searchType" class="form-select w-auto">
@@ -48,6 +61,9 @@
                            class="form-control w-auto"
                            placeholder="Enter value"
                            value="@ViewBag.SearchValue" />
+
+                    <input type="hidden" name="sortBy" value="@ViewBag.SortBy" />
+                    <input type="hidden" name="sortDir" value="@ViewBag.SortDir" />
 
                     @if (!string.IsNullOrEmpty(ViewBag.SearchType) && !string.IsNullOrEmpty(ViewBag.SearchValue))
                     {
@@ -85,13 +101,18 @@
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form id="editForm" asp-action="Edit" method="post">
+            <form id="editForm" asp-action="Edit" method="post"
+                asp-route-filterId="@ViewBag.Filters.FilterString"
+                asp-route-sortBy="@ViewBag.SortBy"
+                asp-route-sortDir="@ViewBag.SortDir"
+                asp-route-searchType="@ViewBag.SearchType"
+                asp-route-searchValue="@ViewBag.SearchValue">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Edit Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="Id" id="edit-id" />
+                    <input type="hidden" name="id" id="edit-id" />
 
                     <div class="mb-3">
                         <label class="form-label">Name</label>
@@ -385,21 +406,36 @@
         updateInputType(); // Run on page load
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        document.addEventListener("click", function (e) {
-            if (e.target.classList.contains("pagination-link")) {
-                const page = e.target.getAttribute("data-page");
+    //Pagination
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("pagination-link")) {
+            e.preventDefault();
 
-                fetch(`/Home/Index?page=${page}`, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById("task-table-container").innerHTML = html;
-                    });
-            }
-        });
-    }); 
+            const page = e.target.getAttribute("data-page");
+            const id = e.target.getAttribute("data-id");
+            const sortBy = e.target.getAttribute("data-sortby");
+            const sortDir = e.target.getAttribute("data-sortdir");
+            const searchType = e.target.getAttribute("data-searchtype");
+            const searchValue = e.target.getAttribute("data-searchvalue");
+
+            const urlParams = new URLSearchParams({
+                page,
+                id,
+                sortBy,
+                sortDir,
+                searchType,
+                searchValue
+            });
+
+            fetch(`/Home/Index?${urlParams.toString()}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("task-table-container").innerHTML = html;
+                });
+        }
+    });
 
     function openManageMembers(projectId) {
         $.get(`/Home/ManageMembersPartial?projectId=${projectId}`, function (html) {

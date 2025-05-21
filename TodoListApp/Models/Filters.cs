@@ -3,20 +3,23 @@
     public class Filters
     {
         public Filters(string filterString) {
-            FilterString = filterString ?? "0-all-0";
+            FilterString = filterString ?? "0-all-0-0";
             string[] filters = FilterString.Split('-');
             CategoryId = filters[0];
             Due = filters[1];
-            StatusId = filters[2];
+            PriorityId = filters[2];
+            StatusId = filters[3];
         }
 
         public string FilterString { get; }
         public string CategoryId { get; }
         public string Due { get; }
+        public string PriorityId { get; }
         public string StatusId { get; }
 
         public bool HasCategory => int.Parse(CategoryId) != 0;
         public bool HasDue => Due.ToLower() != "all";
+        public bool HasPriority => int.Parse(PriorityId) != 0;
         public bool HasStatus => int.Parse(StatusId) != 0;
 
         public static Dictionary<string, string> DueFilterValues =>

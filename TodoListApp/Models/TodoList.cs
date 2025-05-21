@@ -47,6 +47,6 @@ namespace TodoListApp.Models
         [ValidateNever]
         public Project Project { get; set; }
 
-        public bool Overdue => StatusId == 1 && DueDate < DateTime.Today;        
+        public bool Overdue => StatusId != 5 && DueDate < DateTime.Today;        
     }
 }

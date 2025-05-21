@@ -4,9 +4,17 @@
         ? (ViewBag.SortDir == "asc" ? "↑" : "↓")
         : "";
 
+    string startArrow = ViewBag.SortBy == "StartDate"
+        ? (ViewBag.SortDir == "asc" ? "↑" : "↓")
+        : "";
+
     string dueArrow = ViewBag.SortBy == "DueDate"
         ? (ViewBag.SortDir == "asc" ? "↑" : "↓")
         : "";
+
+    string priorityArrow = ViewBag.SortBy == "Priority"
+    ? (ViewBag.SortDir == "asc" ? "↑" : "↓")
+    : "";
 
     string statusArrow = ViewBag.SortBy == "Status"
         ? (ViewBag.SortDir == "asc" ? "↑" : "↓")
@@ -14,7 +22,9 @@
 
     string nextNameDir = ViewBag.SortBy == "Name" && ViewBag.SortDir == "asc" ? "desc" : "asc";
     string nextStatusDir = ViewBag.SortBy == "Status" && ViewBag.SortDir == "asc" ? "desc" : "asc";
+    string nextStartDir = ViewBag.SortBy == "StartDate" && ViewBag.SortDir == "asc" ? "desc" : "asc";
     string nextDueDir = ViewBag.SortBy == "DueDate" && ViewBag.SortDir == "asc" ? "desc" : "asc";
+    string nextPriorDir = ViewBag.SortBy == "Priority" && ViewBag.SortDir == "asc" ? "desc" : "asc";
 }
 @if (Model.Tasks.Any())
 {
@@ -24,23 +34,63 @@
                 <tr>
                     <th class="text-nowrap">
                         Name
-                        <a asp-action="Index" asp-route-sortBy="Name" asp-route-sortDir="@nextNameDir" class="sort-link text-decoration-none">
+                        <a asp-action="Index" 
+                            asp-route-id="@ViewBag.Filters.FilterString"
+                            asp-route-sortBy="Name"
+                            asp-route-sortDir="@nextNameDir"
+                            asp-route-searchType="@ViewBag.SearchType"
+                            asp-route-searchValue="@ViewBag.SearchValue"
+                            class="sort-link text-decoration-none">
                             <i class="fas fa-sort"></i> @nameArrow
                         </a>
                     </th>
                     <th class="description-col">Description</th>
                     <th class="text-nowrap">Category</th>
-                    <th class="text-nowrap">Start Date</th>
+                    <th class="text-nowrap">
+                        Start Date
+                        <a asp-action="Index"
+                            asp-route-id="@ViewBag.Filters.FilterString"
+                            asp-route-sortBy="StartDate"
+                            asp-route-sortDir="@nextStartDir"
+                            asp-route-searchType="@ViewBag.SearchType"
+                            asp-route-searchValue="@ViewBag.SearchValue"
+                            class="sort-link text-decoration-none">
+                            <i class="fas fa-sort"></i> @startArrow
+                        </a>
+                    </th>
                     <th class="text-nowrap">
                         Due Date
-                        <a asp-action="Index" asp-route-sortBy="DueDate" asp-route-sortDir="@nextDueDir" class="sort-link text-decoration-none">
+                        <a asp-action="Index"
+                            asp-route-id="@ViewBag.Filters.FilterString"
+                            asp-route-sortBy="DueDate"
+                            asp-route-sortDir="@nextDueDir"
+                            asp-route-searchType="@ViewBag.SearchType"
+                            asp-route-searchValue="@ViewBag.SearchValue"
+                            class="sort-link text-decoration-none">
                             <i class="fas fa-sort"></i> @dueArrow
                         </a>
                     </th>
-                    <th class="text-nowrap">Priority</th>
+                    <th class="text-nowrap">
+                        Priority
+                        <a asp-action="Index"
+                            asp-route-id="@ViewBag.Filters.FilterString"
+                            asp-route-sortBy="Priority"
+                            asp-route-sortDir="@nextPriorDir"
+                            asp-route-searchType="@ViewBag.SearchType"
+                            asp-route-searchValue="@ViewBag.SearchValue"
+                            class="sort-link text-decoration-none">
+                            <i class="fas fa-sort"></i> @priorityArrow
+                        </a>
+                    </th>
                     <th class="text-nowrap">
                         Status
-                        <a asp-action="Index" asp-route-sortBy="Status" asp-route-sortDir="@nextStatusDir" class="sort-link text-decoration-none">
+                        <a asp-action="Index"
+                            asp-route-id="@ViewBag.Filters.FilterString"
+                            asp-route-sortBy="Status"
+                            asp-route-sortDir="@nextStatusDir"
+                            asp-route-searchType="@ViewBag.SearchType"
+                            asp-route-searchValue="@ViewBag.SearchValue"
+                            class="sort-link text-decoration-none">
                             <i class="fas fa-sort"></i> @statusArrow
                         </a>
                         </th>
@@ -114,9 +164,18 @@
         @if (currentPage > 1)
         {
             <a href="#" class="pagination-link prev"
-               data-section="task" data-page="@(currentPage - 1)">
+               data-page="@(currentPage - 1)"
+               data-id="@ViewBag.Filters.FilterString"
+               data-sortby="@ViewBag.SortBy"
+               data-sortdir="@ViewBag.SortDir"
+               data-searchtype="@ViewBag.SearchType"
+               data-searchvalue="@ViewBag.SearchValue">
                 &laquo;
             </a>
+            @* <a href="#" class="pagination-link prev"
+               data-section="task" data-page="@(currentPage - 1)">
+                &laquo;
+            </a> *@
         }
 
         <span class="mx-3">Page <strong>@currentPage</strong> of <strong>@totalPages</strong></span>
@@ -124,9 +183,18 @@
         @if (currentPage < totalPages)
         {
             <a href="#" class="pagination-link next"
-               data-section="task" data-page="@(currentPage + 1)">
+               data-page="@(currentPage + 1)"
+               data-id="@ViewBag.Filters.FilterString"
+               data-sortby="@ViewBag.SortBy"
+               data-sortdir="@ViewBag.SortDir"
+               data-searchtype="@ViewBag.SearchType"
+               data-searchvalue="@ViewBag.SearchValue">
                 &raquo;
             </a>
+            @* <a href="#" class="pagination-link next"
+               data-section="task" data-page="@(currentPage + 1)">
+                &raquo;
+            </a> *@
         }
     </div>
 }
