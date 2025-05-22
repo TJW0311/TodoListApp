@@ -10,7 +10,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
-<div class="modal-body">
+<div class="modal-body manage-member-modal">
     <h6>Add New</h6>
     <div class="add-section">
         <div class="search-section">
@@ -30,7 +30,7 @@
         @foreach (var member in Model.Members)
         {
             <div class="member-row" data-userid="@member.UserId">
-                <div>
+                <div class="email-info">
                     <div>@member.User.Name</div>
                     <div>@member.User.Email</div>
                 </div>
@@ -113,7 +113,8 @@
         const userId = $("#selectedUserId").val();
         if (!userId) return showToast("Please select a user first.");
 
-        $.post("/Home/AddMember", { projectId, userId }, function () {
+        $.post("/Home/addMember", { projectId, userId }, function () {
+            showToast("Member Added“)；
             reloadMembers(projectId);
         }).fail(function (xhr) {
             showToast(xhr.responseText || "Failed to add member.");

@@ -20,6 +20,9 @@ namespace TodoListApp.Models
 
         public DbSet<Priority> priorities { get; set; } = null!;
 
+        public DbSet<ProjectInvitation> projectInvitations { get; set; } = null!;
+
+
         //send data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,7 +39,8 @@ namespace TodoListApp.Models
                 new Status { StatusId = 2, Name = "Waiting Approval" },
                 new Status { StatusId = 3, Name = "Approved" },
                 new Status { StatusId = 4, Name = "In Progress" },
-                new Status { StatusId = 5, Name = "Completed" }
+                new Status { StatusId = 5, Name = "Completed" },
+                new Status { StatusId = 6, Name = "Rejected" }
             );
 
             modelBuilder.Entity<Priority>().HasData(

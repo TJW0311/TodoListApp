@@ -76,6 +76,7 @@
         function updateStatusOptionsBasedOnPriority(priorityValue) {
             const statusId_WaitingApproval = "2"; // replace with actual ID from DB
             const statusId_Approved = "3";
+            const statusId_Rejected = "6";
 
             // Reset
             statusDropdown.innerHTML = "";
@@ -101,7 +102,7 @@
                 // Filter out Waiting Approval and Approved
                 for (let i = statusDropdown.options.length - 1; i >= 0; i--) {
                     const option = statusDropdown.options[i];
-                    if (option.value === statusId_WaitingApproval || option.value === statusId_Approved) {
+                    if (option.value === statusId_WaitingApproval || option.value === statusId_Approved || option.value === statusId_Rejected) {
                         statusDropdown.remove(i);
                     }
                 }

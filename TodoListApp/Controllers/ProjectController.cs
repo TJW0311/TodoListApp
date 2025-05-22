@@ -155,7 +155,11 @@ namespace TodoListApp.Controllers
             return Ok("Deleted");
         }
 
-        public class ProjectUpdateDto { public int Id { get; set; } public string NewName { get; set; } }
+        public class ProjectUpdateDto 
+        { 
+            public int Id { get; set; } 
+            public string NewName { get; set; } 
+        }
         public class ProjectDeleteDto { public int Id { get; set; } }
 
     }

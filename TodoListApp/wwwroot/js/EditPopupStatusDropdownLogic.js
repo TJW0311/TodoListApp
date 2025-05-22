@@ -13,7 +13,8 @@ const STATUS = {
     WaitingApproval: "2",
     Approved: "3",
     InProgress: "4",
-    Completed: "5"
+    Completed: "5",
+    Rejected: "6"
 };
 
 const userRole = document.getElementById("userRole").dataset.role;
@@ -31,11 +32,15 @@ function updateEditStatusDropdown(priorityValue, currentStatusValue) {
     if (priorityValue === "3") { // High priority
         if (currentStatusValue === STATUS.WaitingApproval) {
             if (userRole === "Manager") {
-                allowedStatusIds = [STATUS.WaitingApproval, STATUS.Approved];
+                allowedStatusIds = [STATUS.WaitingApproval, STATUS.Approved, STATUS.Rejected];
+                editPriorityDropdown.setAttribute("readonly", false);
+                editPriorityDropdown.classList.remove("readonly-select");
                 editStatusDropdown.setAttribute("readonly", false);
                 editStatusDropdown.classList.remove("readonly-select");
             } else {
-                allowedStatusIds = [STATUS.WaitingApproval];
+                allowedStatusIds = [STATUS.WaitingApproval]; 
+                editPriorityDropdown.setAttribute("readonly", true);
+                editPriorityDropdown.classList.add("readonly-select");
                 editStatusDropdown.setAttribute("readonly", true);
                 editStatusDropdown.classList.add("readonly-select");
                 statusNotice.textContent = "⚠ Waiting for the manager approve";

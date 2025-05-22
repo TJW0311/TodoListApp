@@ -32,10 +32,28 @@ document.addEventListener("DOMContentLoaded", function () {
                         document.getElementById("edit-status").value = task.statusId;
                         document.getElementById("edit-assignto").value = task.assignedToUserId;
 
+                        if (task.statusId === 6) {
+                            // Disable all inputs/selects inside the modal body
+                            document.querySelectorAll("#editModal .modal-body input, #editModal .modal-body select").forEach(input => {
+                                input.disabled = true;
+                            });
+
+                            // Hide the Save Changes button
+                            document.getElementById("save-edit").style.display = "none";
+                        } else {
+                            updateEditStatusDropdown(task.priorityId, task.statusId);
+                            // Re-enable inputs/selects if status is not 6 (for future clicks)
+                            document.querySelectorAll("#editModal .modal-body input, #editModal .modal-body select").forEach(input => {
+                                input.disabled = false;
+                            });
+
+                            // Show the Save Changes button again
+                            document.getElementById("save-edit").style.display = "inline-block";
+                        }
                         // also set delete ID
                         document.getElementById("delete-id").value = task.id;
                         clearAllValidation(fields);
-                        updateEditStatusDropdown(task.priorityId, task.statusId);
+                        
                     }
                 });
         });

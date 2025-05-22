@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TodoListApp.Models;
+using static TodoListApp.Controllers.HomeController;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddSession();
 //Add EF Coe DI
 builder.Services.AddDbContext<TodoDb>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("TodoDb")));
+//builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
 var app = builder.Build();
 

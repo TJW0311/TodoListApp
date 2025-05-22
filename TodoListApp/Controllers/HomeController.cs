@@ -11,12 +11,21 @@ using TodoListApp.ViewModels;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Drawing;
 using ClosedXML.Excel;
+using static TodoListApp.Controllers.HomeController;
 
 namespace TodoListApp.Controllers
 {
     public class HomeController : Controller
     {
         private TodoDb todoDb_context;
+
+        /*private readonly IEmailService _emailService;
+
+        public HomeController(TodoDb db, IEmailService emailService)
+        {
+            todoDb_context = db;
+            _emailService = emailService;
+        }*/
 
         public HomeController(TodoDb db) => todoDb_context = db;
 
@@ -399,6 +408,74 @@ namespace TodoListApp.Controllers
             return Json(new { found = true, users });
         }
 
+        /*public interface IEmailService
+        {
+            Task SendEmailAsync(string toEmail, string subject, string htmlContent);
+        }
+
+        public async Task<IActionResult> InviteMember(int projectId, string inviteeEmail)
+        {
+            projectId = HttpContext.Session.GetInt32("ProjId") ?? 0;
+            var inviterId = HttpContext.Session.GetInt32("UserId");
+            var inviter = await todoDb_context.users.FindAsync(inviterId);
+            var project = await todoDb_context.projects.FindAsync(projectId);
+
+            if (inviter == null || project == null) return NotFound();
+
+            var token = Guid.NewGuid().ToString();
+            todoDb_context.projectInvitations.Add(new ProjectInvitation
+            {
+                Email = inviteeEmail,
+                Token = token,
+                ProjectId = projectId,
+                Expiration = DateTime.UtcNow.AddDays(3)
+            });
+            await todoDb_context.SaveChangesAsync();
+
+            var callbackUrl = Url.Action("AcceptInvitation", "Home", new
+            {
+                projectId,
+                email = inviteeEmail,
+                token
+            }, protocol: Request.Scheme);
+
+            var subject = $"You're invited to join project '{project.Name}'";
+            var htmlMessage = $"<p>{inviter.Name} has invited you to join project <strong>{project.Name}</strong>.</p>" +
+                              $"<p><a href='{callbackUrl}' style='padding:10px 20px;background:#7d2ae8;color:white;text-decoration:none;border-radius:5px;'>Join Now</a></p>";
+
+            await _emailService.SendEmailAsync(inviteeEmail, subject, htmlMessage);
+            return Ok("Invitation sent.");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AcceptInvitation(int projectId, string email, string token)
+        {
+            var invitation = await todoDb_context.projectInvitations
+                .FirstOrDefaultAsync(i => i.ProjectId == projectId && i.Email == email && i.Token == token && !i.IsUsed);
+
+            if (invitation == null || invitation.Expiration < DateTime.UtcNow)
+                return BadRequest("Invalid or expired invitation.");
+
+            var user = await todoDb_context.users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+                return RedirectToAction("Register", "Auth", new { email, projectId, token });
+
+            if (!todoDb_context.projectMembers.Any(pm => pm.ProjectId == projectId && pm.UserId == user.UserId))
+            {
+                todoDb_context.projectMembers.Add(new ProjectMember
+                {
+                    ProjectId = projectId,
+                    UserId = user.UserId,
+                    Role = "Member"
+                });
+                invitation.IsUsed = true;
+                await todoDb_context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index", new { projId = projectId });
+        }*/
+
         [HttpPost]
         public async Task<IActionResult> AddMember(int projectId, int userId)
         {
@@ -414,7 +491,6 @@ namespace TodoListApp.Controllers
 
             todoDb_context.projectMembers.Add(projectMember);
             await todoDb_context.SaveChangesAsync();
-
             return Ok();
         }
 
