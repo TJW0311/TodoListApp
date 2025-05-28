@@ -59,7 +59,7 @@
         <span asp-validation-for="AssignedToUserId" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Add</button>
+    <button type="submit" class="btn btn-primary add-btn">Add</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 
@@ -126,12 +126,23 @@
         const dueInput = document.getElementById("DueDate");
 
         function validateDueDate() {
-            const start = new Date(startInput.value);
-            const due = new Date(dueInput.value);
+            const today = new Date().getDate;
+            const start = new Date(startInput.value).getDate;
+            const due = new Date(dueInput.value).getDate;
+            const startErrorSpan = document.querySelector("[data-valmsg-for='StartDate']");
             const dueErrorSpan = document.querySelector("[data-valmsg-for='DueDate']");
+            console.log(today, start, due)
+
+            if (startInput.value && start < today) {
+                startErrorSpan.innerText = "Start date cannot be earlier than today.";
+                startErrorSpan.classList.add("is-invalid");
+            } else {
+                startErrorSpan.innerText = "";
+                startErrorSpan.startErrorSpan.remove("is-invalid");
+            }
 
             if (startInput.value && dueInput.value && due < start) {
-                dueErrorSpan.innerText = "❗ Due date cannot be earlier than start date.";
+                dueErrorSpan.innerText = "Due date cannot be earlier than start date.";
                 dueInput.classList.add("is-invalid");
             } else {
                 dueErrorSpan.innerText = "";

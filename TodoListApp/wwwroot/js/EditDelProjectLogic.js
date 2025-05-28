@@ -31,13 +31,34 @@ function saveProjectName() {
 }
 
 function openDeletePopup(id, name) {
-    document.getElementById("deleteProjectId").value = id;
-    document.getElementById("deleteProjectName").innerText = name;
+    const projectIdInput = document.getElementById("deleteProjectId");
+    const warningText = document.getElementById("deleteWarningText");
+
+    projectIdInput.value = id;
+    warningText.innerText = "Loading task info...";
+
+    fetch(`/Project/GetActiveTaskCount?projectId=${id}`)
+        .then(res => res.json())
+        .then(count => {
+            if (count > 0) {
+                warningText.innerHTML = `<strong>${name}</strong> has <strong>${count}</strong> active task${count > 1 ? 's' : ''}.<br>Are you sure you want to delete it?`;
+            } else {
+                warningText.innerHTML = 'Are you sure you want to delete project <strong>${name}</strong>?';
+            }
+        })
+        .catch(() => {
+            warningText.innerText = "Unable to load task information.";
+        });
+
     new bootstrap.Modal(document.getElementById("deleteProjectModal")).show();
 }
 
+
 function confirmDeleteProject() {
     const id = document.getElementById("deleteProjectId").value;
+    const text = document.getElementById("deleteWarningText").innerText;
+
+    if (!confirm(`${text}\n\nProceed with deletion?`)) return;
 
     fetch(`/Project/DeleteProject`, {
         method: "POST",

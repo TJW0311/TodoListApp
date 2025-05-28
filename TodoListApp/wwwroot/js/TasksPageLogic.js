@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
         name: document.getElementById("edit-name"),
         description: document.getElementById("edit-description"),
         category: document.getElementById("edit-category"),
-        start: document.getElementById("edit-start"),
+        //start: document.getElementById("edit-start"),
         due: document.getElementById("edit-due"),
         priority: document.getElementById("edit-priority"),
         status: document.getElementById("edit-status"),
@@ -104,6 +104,15 @@ document.addEventListener("DOMContentLoaded", function () {
         valid &= validateField(fields.status, fields.status.value, "Please select status.");
         valid &= validateField(fields.assignee, fields.assignee.value, "Please select a user.");
 
+        //Check if start earlier than today
+        if (fields.start.value) {
+            todayDate = new Date();
+            const startDate = new Date(fields.start.value);
+            console.log(todayDate);
+            console.log(startDate);
+            console.log(startDate < todayDate);
+            valid &= validateField(fields.start, startDate > todayDate , "Start date cannot be earlier than today.");
+        }
         // Check if due >= start
         if (fields.start.value && fields.due.value) {
             const startDate = new Date(fields.start.value);

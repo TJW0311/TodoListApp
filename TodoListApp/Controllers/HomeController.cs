@@ -238,14 +238,17 @@ namespace TodoListApp.Controllers
         [HttpPost]
         public IActionResult Add(TodoList task)
         {
+            DateTime today = DateTime.Now.Date;
             if (string.IsNullOrWhiteSpace(task.Description))
                 ModelState.AddModelError("Description", "Please enter description.");            
             if (task.CategoryId == 0)
                 ModelState.AddModelError("CategoryId", "Please select a category.");
             if (!task.AssignedToUserId.HasValue)
                 ModelState.AddModelError("AssignedToUserId", "Please assign to a member.");
+            if (task.StartDate.HasValue && task.StartDate < today)
+                ModelState.AddModelError("StartDate", "Start date cannot be earlier than today.");
             if (task.StartDate.HasValue && task.DueDate.HasValue && task.DueDate < task.StartDate)
-                ModelState.AddModelError("DueDate", "Due date must be after start date.");
+                ModelState.AddModelError("DueDate", "Due date cannot be earlier than start date");
             if (task.PriorityId == 0)
                 ModelState.AddModelError("PriorityId", "Please select a priority.");
             if (task.StatusId == 0)

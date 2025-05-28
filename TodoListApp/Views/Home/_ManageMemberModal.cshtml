@@ -114,7 +114,7 @@
         if (!userId) return showToast("Please select a user first.");
 
         $.post("/Home/addMember", { projectId, userId }, function () {
-            showToast("Member Added“)；
+            showToast("Member Added");
             reloadMembers(projectId);
         }).fail(function (xhr) {
             showToast(xhr.responseText || "Failed to add member.");

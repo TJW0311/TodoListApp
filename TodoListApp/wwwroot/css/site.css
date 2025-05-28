@@ -30,7 +30,7 @@ body {
 
 .btn-primary {
     color: #fff;
-    background: #7d2ae8;
+    background: #FFA500 !important;
     border-radius: 6px;
     padding: 10;
     cursor: pointer;
