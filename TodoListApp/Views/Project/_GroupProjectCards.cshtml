@@ -4,7 +4,7 @@
     <div class="card-grid">
         @foreach (var project in Model.GroupProjects)
         {
-            var memberCount = Model.ProjectMemberCounts[project.Id]; // You must include this in your ViewModel
+            var memberCount = Model.ProjectMemberCounts[project.Id];
             <div class="project-card" onclick="location.href='@Url.Action("Index", "Home", new { projId = project.Id })'">
                 <div class="project-dropdown" onclick="event.stopPropagation()">
                     <button type="button" data-bs-toggle="dropdown" aria-expanded="false">

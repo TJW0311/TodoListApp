@@ -20,6 +20,7 @@ namespace TodoListApp.Models
 
         public DbSet<Priority> priorities { get; set; } = null!;
 
+
         //send data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

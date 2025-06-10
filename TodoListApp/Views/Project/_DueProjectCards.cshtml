@@ -4,7 +4,38 @@
     <div class="card-grid">
         @foreach (var project in Model.DueProjects)
         {
-            var memberCount = Model.ProjectMemberCounts[project.Id]; // You must include this in your ViewModel
+            var memberCount = Model.ProjectMemberCounts[project.Id];
+            var dueDate = Model.ProjectDueDates[project.Id];
+
+            string badgeText = "";
+            string badgeClass = "badge bg-secondary";
+
+            if (dueDate != null)
+            {
+                var days = (dueDate.Value.Date - DateTime.Today).Days;
+
+                if (days < 0)
+                {
+                    badgeText = "Overdue";
+                    badgeClass = "badge bg-danger";
+                }
+                else if (days == 0)
+                {
+                    badgeText = "Due Today";
+                    badgeClass = "badge bg-warning text-dark";
+                }
+                else if (days == 1)
+                {
+                    badgeText = "Due Tomorrow";
+                    badgeClass = "badge bg-info text-dark";
+                }
+                else
+                {
+                    badgeText = $"In {days} Days";
+                    badgeClass = "badge bg-success";
+                }
+            }
+
             <div class="project-card" onclick="location.href='@Url.Action("Index", "Home", new { projId = project.Id })'">
                 @* event.stopPropagation() prevents the event from bubbling up to the .project-card's onclick *@
                 <div class="project-dropdown" onclick="event.stopPropagation()">
@@ -17,8 +48,15 @@
                     </ul>
                 </div>
 
-                <div class="project-title">@project.Name</div>
-                <div class="project-sub">@project.Name.ToLower()</div>
+                <div class="project-title">@project.Name</div>                
+
+                @if (dueDate != null)
+                {
+                    <div class="due-info mt-1">
+                        <span class="@badgeClass">@badgeText</span>
+                        <small class="text-muted ms-2">(@dueDate.Value.ToString("dd MMM yyyy"))</small>
+                    </div>
+                }
                 
                 <div class="member-icon" title="@memberCount member@(memberCount > 1 ? "s" : "")">
                     @if (memberCount > 1)
@@ -33,6 +71,30 @@
             </div>
         }
     </div>
+    @* <div class="pagination">
+        @{
+            var currentPage = Model.DueProjectsPage;
+            var totalPages = Model.DueProjectsTotalPages;
+        }
+
+        @if (currentPage > 1)
+        {
+            <a href="#" class="pagination-link prev"
+               data-section="almost-due" data-page="@(currentPage - 1)">
+                &laquo;
+            </a>
+        }
+
+        <span class="current-page">Page @currentPage of @totalPages</span>
+
+        @if (currentPage < totalPages)
+        {
+            <a href="#" class="pagination-link next"
+               data-section="almost-due" data-page="@(currentPage + 1)">
+                &raquo;
+            </a>
+        }
+    </div> *@
 }
 else
 {

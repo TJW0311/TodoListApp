@@ -13,6 +13,11 @@ namespace TodoListApp.ViewModels
         public int MyProjectsTotalPages { get; set; }
         public int GroupProjectsTotalPages { get; set; }
 
+        public int DueProjectsPage { get; set; }
+        public int DueProjectsTotalPages { get; set; }
+
         public Dictionary<int, int> ProjectMemberCounts { get; set; } = new();
+        public Dictionary<int, DateTime?> ProjectDueDates { get; set; } = new();
+        public Dictionary<int, int> ProjectDueTaskCounts { get; set; } = new();
     }
 }

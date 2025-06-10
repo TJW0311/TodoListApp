@@ -13,137 +13,129 @@
 });
 
 // set value to the input for popup edit
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".task-row").forEach(row => {
-        row.addEventListener("click", function () {
-            const taskId = this.dataset.id;
+document.getElementById("task-table-container").addEventListener("click", function (e) {
+    const row = e.target.closest(".task-row");
+    if (row) {
+        const taskId = row.dataset.id;
 
-            fetch(`/Home/GetTaskDetails?id=${taskId}`)
-                .then(response => response.json())
-                .then(task => {
-                    if (task) {
-                        document.getElementById("edit-id").value = task.id;
-                        document.getElementById("edit-name").value = task.name;
-                        document.getElementById("edit-description").value = task.description;
-                        document.getElementById("edit-category").value = task.categoryId;
-                        document.getElementById("edit-start").value = task.startDate;
-                        document.getElementById("edit-due").value = task.dueDate;
-                        document.getElementById("edit-priority").value = task.priorityId;
-                        document.getElementById("edit-status").value = task.statusId;
-                        document.getElementById("edit-assignto").value = task.assignedToUserId;
+        fetch(`/Home/GetTaskDetails?id=${taskId}`)
+            .then(response => response.json())
+            .then(task => {
+                if (task) {
+                    document.getElementById("edit-id").value = task.id;
+                    document.getElementById("edit-name").value = task.name;
+                    document.getElementById("edit-description").value = task.description;
+                    document.getElementById("edit-category").value = task.categoryId;
+                    document.getElementById("edit-start").value = task.startDate;
+                    document.getElementById("edit-due").value = task.dueDate;
+                    document.getElementById("edit-priority").value = task.priorityId;
+                    document.getElementById("edit-status").value = task.statusId;
+                    document.getElementById("edit-assignto").value = task.assignedToUserId;
 
-                        if (task.statusId === 6) {
-                            // Disable all inputs/selects inside the modal body
-                            document.querySelectorAll("#editModal .modal-body input, #editModal .modal-body select").forEach(input => {
-                                input.disabled = true;
-                            });
-
-                            // Hide the Save Changes button
-                            document.getElementById("save-edit").style.display = "none";
-                        } else {
-                            updateEditStatusDropdown(task.priorityId, task.statusId);
-                            // Re-enable inputs/selects if status is not 6 (for future clicks)
-                            document.querySelectorAll("#editModal .modal-body input, #editModal .modal-body select").forEach(input => {
-                                input.disabled = false;
-                            });
-
-                            // Show the Save Changes button again
-                            document.getElementById("save-edit").style.display = "inline-block";
-                        }
-                        // also set delete ID
-                        document.getElementById("delete-id").value = task.id;
-                        clearAllValidation(fields);
-                        
+                    if (task.statusId === 6) {
+                        document.querySelectorAll("#editModal .modal-body input, #editModal .modal-body select").forEach(input => {
+                            input.disabled = true;
+                        });
+                        document.getElementById("save-edit").style.display = "none";
+                    } else {
+                        updateEditStatusDropdown(task.priorityId, task.statusId);
+                        document.querySelectorAll("#editModal .modal-body input, #editModal .modal-body select").forEach(input => {
+                            input.disabled = false;
+                        });
+                        document.getElementById("save-edit").style.display = "inline-block";
                     }
-                });
-        });
-    });
 
-    const form = document.getElementById("editForm");
-    const saveBtn = document.querySelector('[form="editForm"]');
-    const fields = {
-        name: document.getElementById("edit-name"),
-        description: document.getElementById("edit-description"),
-        category: document.getElementById("edit-category"),
-        //start: document.getElementById("edit-start"),
-        due: document.getElementById("edit-due"),
-        priority: document.getElementById("edit-priority"),
-        status: document.getElementById("edit-status"),
-        assignee: document.getElementById("edit-assignto")
-    };
+                    document.getElementById("delete-id").value = task.id;
+                    clearAllValidation(fields);
+                }
+            });
+    }
+});
 
-    function validateField(field, condition, message) {
-        const parent = field.parentElement;
-        const existing = parent.querySelector(".text-danger");
+const form = document.getElementById("editForm");
+const saveBtn = document.querySelector('[form="editForm"]');
+const fields = {
+    name: document.getElementById("edit-name"),
+    description: document.getElementById("edit-description"),
+    category: document.getElementById("edit-category"),
+    //start: document.getElementById("edit-start"),
+    due: document.getElementById("edit-due"),
+    priority: document.getElementById("edit-priority"),
+    status: document.getElementById("edit-status"),
+    assignee: document.getElementById("edit-assignto")
+};
 
-        if (!condition) {
-            field.classList.add("is-invalid");
-            if (!existing) {
-                const error = document.createElement("div");
-                error.className = "text-danger small mt-1";
-                error.innerText = message;
-                parent.appendChild(error);
-            }
-            return false;
-        } else {
-            field.classList.remove("is-invalid");
-            if (existing) existing.remove();
-            return true;
+function validateField(field, condition, message) {
+    const parent = field.parentElement;
+    const existing = parent.querySelector(".text-danger");
+
+    if (!condition) {
+        field.classList.add("is-invalid");
+        if (!existing) {
+            const error = document.createElement("div");
+            error.className = "text-danger small mt-1";
+            error.innerText = message;
+            parent.appendChild(error);
         }
+        return false;
+    } else {
+        field.classList.remove("is-invalid");
+        if (existing) existing.remove();
+        return true;
+    }
+}
+
+function validateAllFields() {
+    let valid = true;
+
+    valid &= validateField(fields.name, fields.name.value.trim() !== "", "Please enter task name.");
+    valid &= validateField(fields.description, fields.description.value.trim() !== "", "Please enter description.");
+    valid &= validateField(fields.category, fields.category.value, "Please select a category.");
+    valid &= validateField(fields.start, fields.start.value, "Please select a start date.");
+    valid &= validateField(fields.due, fields.due.value, "Please select a due date.");
+    valid &= validateField(fields.priority, fields.priority.value, "Please select priority.");
+    valid &= validateField(fields.status, fields.status.value, "Please select status.");
+    valid &= validateField(fields.assignee, fields.assignee.value, "Please select a user.");
+
+    //Check if start earlier than today
+    if (fields.start.value) {
+        todayDate = new Date();
+        const startDate = new Date(fields.start.value);
+        console.log(todayDate);
+        console.log(startDate);
+        console.log(startDate < todayDate);
+        valid &= validateField(fields.start, startDate > todayDate , "Start date cannot be earlier than today.");
+    }
+    // Check if due >= start
+    if (fields.start.value && fields.due.value) {
+        const startDate = new Date(fields.start.value);
+        const dueDate = new Date(fields.due.value);
+        valid &= validateField(fields.due, dueDate >= startDate, "Due date cannot be earlier than start date.");
     }
 
-    function validateAllFields() {
-        let valid = true;
+    return !!valid;
+}
 
-        valid &= validateField(fields.name, fields.name.value.trim() !== "", "Please enter task name.");
-        valid &= validateField(fields.description, fields.description.value.trim() !== "", "Please enter description.");
-        valid &= validateField(fields.category, fields.category.value, "Please select a category.");
-        valid &= validateField(fields.start, fields.start.value, "Please select a start date.");
-        valid &= validateField(fields.due, fields.due.value, "Please select a due date.");
-        valid &= validateField(fields.priority, fields.priority.value, "Please select priority.");
-        valid &= validateField(fields.status, fields.status.value, "Please select status.");
-        valid &= validateField(fields.assignee, fields.assignee.value, "Please select a user.");
-
-        //Check if start earlier than today
-        if (fields.start.value) {
-            todayDate = new Date();
-            const startDate = new Date(fields.start.value);
-            console.log(todayDate);
-            console.log(startDate);
-            console.log(startDate < todayDate);
-            valid &= validateField(fields.start, startDate > todayDate , "Start date cannot be earlier than today.");
-        }
-        // Check if due >= start
-        if (fields.start.value && fields.due.value) {
-            const startDate = new Date(fields.start.value);
-            const dueDate = new Date(fields.due.value);
-            valid &= validateField(fields.due, dueDate >= startDate, "Due date cannot be earlier than start date.");
-        }
-
-        return !!valid;
-    }
-
-    function clearAllValidation(fields) {
-        Object.values(fields).forEach(field => {
-            const parent = field.parentElement;
-            const error = parent.querySelector(".text-danger");
-
-            field.classList.remove("is-invalid");
-            if (error) error.remove();
-        });
-    }
-
-    saveBtn.addEventListener("click", function (e) {
-        if (!validateAllFields()) {
-            e.preventDefault(); // stop form if invalid
-        }
-    });
-
-    // Real-time validation
+function clearAllValidation(fields) {
     Object.values(fields).forEach(field => {
-        field.addEventListener("input", () => validateAllFields());
-        field.addEventListener("change", () => validateAllFields());
+        const parent = field.parentElement;
+        const error = parent.querySelector(".text-danger");
+
+        field.classList.remove("is-invalid");
+        if (error) error.remove();
     });
+}
+
+saveBtn.addEventListener("click", function (e) {
+    if (!validateAllFields()) {
+        e.preventDefault(); // stop form if invalid
+    }
+});
+
+// Real-time validation
+Object.values(fields).forEach(field => {
+    field.addEventListener("input", () => validateAllFields());
+    field.addEventListener("change", () => validateAllFields());
 });
 
 // Mark that a sort was clicked

@@ -27,6 +27,8 @@ namespace TodoListApp.Controllers
                 GroupProjectsPage = 1,
                 MyProjectsTotalPages = 1,
                 GroupProjectsTotalPages = 1,
+                DueProjectsPage = 1,
+                DueProjectsTotalPages = 1,
                 MyProjects = new List<Project>(),
                 GroupProjects = new List<Project>(),
                 DueProjects = new List<Project>()
@@ -53,8 +55,8 @@ namespace TodoListApp.Controllers
                     .Where(g => g.Any(pm => pm.UserId == userId))
                     .Select(g => g.Key);
 
-                var top4DueProjectIds = _context.todoLists
-                    .Where(t => ProjectIds.Contains(t.ProjectId) && t.DueDate != null && t.DueDate >= DateTime.Today)
+                var top4DueProject = _context.todoLists
+                    .Where(t => ProjectIds.Contains(t.ProjectId) && t.DueDate != null && t.StatusId != 6 && t.StatusId != 5)
                     .GroupBy(t => t.ProjectId)                    
                     .Select(g => new
                     {
@@ -63,8 +65,10 @@ namespace TodoListApp.Controllers
                     })
                     .OrderBy(g => g.NearestDueDate)
                     .Take(4)
-                    .Select(g => g.ProjectId)
                     .ToList();
+
+                var top4DueProjectIds = top4DueProject.Select(g => g.ProjectId).ToList();
+                var projectDueDates = top4DueProject.ToDictionary(g => g.ProjectId, g => g.NearestDueDate);
 
                 var Projects = _context.projects
                     .Where(p => top4DueProjectIds.Contains(p.Id))
@@ -77,7 +81,11 @@ namespace TodoListApp.Controllers
                 var vm = new ProjectViewModel
                 {
                     DueProjects = Projects.ToList(),
-                    ProjectMemberCounts = memberCount
+                    //DueProjects = Projects.Skip((page - 1) * PageSize).Take(PageSize).ToList(),
+                    //DueProjectsPage = page,
+                    //DueProjectsTotalPages = (int)Math.Ceiling(Projects.Count() / (double)PageSize),
+                    ProjectMemberCounts = memberCount,
+                    ProjectDueDates = projectDueDates
                 };
 
                 return PartialView("_DueProjectCards", vm);
@@ -220,7 +228,7 @@ namespace TodoListApp.Controllers
         public IActionResult GetActiveTaskCount(int projectId)
         {
             var count = _context.todoLists
-                .Count(t => t.ProjectId == projectId && t.StatusId != 5); // Assuming 5 = Completed
+                .Count(t => t.ProjectId == projectId && t.StatusId != 5); // 5 = Completed
 
             return Ok(count);
         }
