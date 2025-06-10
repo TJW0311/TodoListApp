@@ -25,13 +25,17 @@ This To-Do List web application includes the following key functionalities:
 | Category        | Technology                                |
 |----------------|--------------------------------------------|
 | 👨‍💻 Platform       | Visual Studio 2022                       |
-| 🧠 Language       | C#, JavaScript, HTML, CSS                |
-| 🧱 Framework      | ASP.NET Core MVC                         |
+| 🧠 Language       | C#, JavaScript, HTML, CSS，Bootstrap     |
+| 🧱 Framework      | ASP.NET Core MVC (.Net 8.0)                        |
 | 🗃️ Database       | SQL Server (LocalDB) via Entity Framework Core |
 
 ---
 
 ## 🚀 How to Run the App
+### Ensure you have downloaded the following NuGet packages:
+![WhatsApp Image 2025-05-22 at 10 28 20_28f39322](https://github.com/user-attachments/assets/1df89194-b249-4d1f-a05a-c7b041b045d1)
+
+
 **1. Open Visual Studio 2022**
 
 Launch Visual Studio and select "Clone a repository".
